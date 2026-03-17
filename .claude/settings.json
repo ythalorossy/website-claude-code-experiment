@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(pnpm view:*)",
+      "Bash(pnpm install:*)",
+      "Bash(timeout 20 pnpm dev)",
+      "Bash(pnpm add:*)",
+      "Bash(timeout 30 pnpm dev)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(timeout 10 pnpm dev)"
+    ]
+  }
+}

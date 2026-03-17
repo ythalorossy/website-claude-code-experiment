@@ -1,0 +1,55 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "about": "About",
+    "blog": "Blog",
+    "contact": "Contact",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "admin": "Admin"
+  },
+  "Home": {
+    "title": "Welcome to Our Site",
+    "subtitle": "A modern marketing website with blog",
+    "readBlog": "Read Blog",
+    "learnMore": "Learn More"
+  },
+  "Blog": {
+    "title": "Blog",
+    "subtitle": "Read our latest articles",
+    "noPosts": "No posts found",
+    "readMore": "Read more"
+  },
+  "Contact": {
+    "title": "Contact Us",
+    "subtitle": "Get in touch with us",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "submit": "Send Message",
+    "success": "Message sent successfully!",
+    "error": "Failed to send message"
+  },
+  "Admin": {
+    "dashboard": "Dashboard",
+    "posts": "Posts",
+    "users": "Users",
+    "newPost": "New Post",
+    "editPost": "Edit Post",
+    "deletePost": "Delete Post",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "draft": "Draft",
+    "published": "Published"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back"
+  }
+}
