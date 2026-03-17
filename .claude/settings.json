@@ -8,7 +8,9 @@
       "Bash(pnpm add:*)",
       "Bash(timeout 30 pnpm dev)",
       "Bash(pnpm typecheck:*)",
-      "Bash(timeout 10 pnpm dev)"
+      "Bash(timeout 10 pnpm dev)",
+      "Bash(pnpm prisma:*)",
+      "Bash(pnpm build:*)"
     ]
   }
 }

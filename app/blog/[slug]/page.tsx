@@ -7,12 +7,13 @@ import { formatDate } from '@/lib/utils';
 import { ClapButton } from '@/components/ClapButton';
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
   const post = await prisma.post.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     select: { title: true, excerpt: true },
   });
 
@@ -32,10 +33,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
+  const { slug } = await params;
   const session = await getServerSession(authOptions);
 
   const post = await prisma.post.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: { author: { select: { name: true } } },
   });
 

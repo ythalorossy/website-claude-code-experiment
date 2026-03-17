@@ -9,7 +9,8 @@ const contactSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const rateLimit = await checkContactRateLimit(request.ip ?? 'unknown');
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ?? request.headers.get('x-real-ip') ?? 'unknown';
+  const rateLimit = await checkContactRateLimit(ip);
   if (!rateLimit.success) {
     return NextResponse.json(
       { message: rateLimit.message },

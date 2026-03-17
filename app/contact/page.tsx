@@ -19,7 +19,7 @@ type ContactFormData = z.infer<typeof contactSchema>;
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitResult, setSubmitResult] = useState<{ success?: boolean; message?: string }>(null);
+  const [submitResult, setSubmitResult] = useState<{ success?: boolean; message?: string } | null>(null);
 
   const {
     register,
@@ -60,13 +60,13 @@ export default function ContactPage() {
       <div className="mx-auto max-w-2xl">
         <h1 className="mb-2 text-4xl font-bold">Contact Us</h1>
         <p className="mb-8 text-gray-600 dark:text-gray-400">
-          Get in touch with us. We'd love to hear from you.
+          Get in touch with us. We&apos;d love to hear from you.
         </p>
 
         <Card>
           <CardHeader>
             <CardTitle>Send a Message</CardTitle>
-            <CardDescription>Fill out the form below and we'll get back to you.</CardDescription>
+            <CardDescription>Fill out the form below and we&apos;ll get back to you.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

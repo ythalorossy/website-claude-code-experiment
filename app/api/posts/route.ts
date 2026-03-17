@@ -31,7 +31,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const rateLimit = await checkRateLimit(request.ip ?? 'unknown');
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ?? request.headers.get('x-real-ip') ?? 'unknown';
+  const rateLimit = await checkRateLimit(ip);
   if (!rateLimit.success) {
     return NextResponse.json({ error: 'Rate limited' }, { status: 429 });
   }
