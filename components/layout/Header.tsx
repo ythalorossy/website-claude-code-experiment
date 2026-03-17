@@ -1,13 +1,55 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/Button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
-export async function Header() {
-  const session = await getServerSession(authOptions);
+export function Header() {
+  const { data: session, status } = useSession();
+  const [hasSession, setHasSession] = useState(false);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      setHasSession(true);
+    } else if (status === 'unauthenticated') {
+      setHasSession(false);
+    }
+  }, [status]);
+
   const user = session?.user;
+  const isLoading = status === 'loading';
+
+  const handleSignOut = () => {
+    signOut({ callbackUrl: '/' });
+  };
+
+  // Show loading state while checking session
+  if (isLoading) {
+    return (
+      <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+        <div className="container mx-auto px-4 flex h-16 items-center justify-between">
+          <Link href="/" className="flex items-center space-x-2 group">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-lg shadow-brand-500/25">
+              <span className="text-white font-bold text-sm">M</span>
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent">
+              Marketing
+            </span>
+          </Link>
+          <nav className="flex items-center gap-4">
+            <Link href="/blog" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">Blog</Link>
+            <Link href="/about" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">About</Link>
+            <Link href="/contact" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">Contact</Link>
+            <ThemeToggle />
+            <Button size="sm" className="btn-glow" disabled>Loading...</Button>
+          </nav>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
@@ -109,17 +151,15 @@ export async function Header() {
                         </Link>
                       )}
                       <div className="border-t border-gray-200 dark:border-gray-700 my-1" />
-                      <form action="/api/auth/signout" method="POST">
-                        <button
-                          type="submit"
-                          className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                          </svg>
-                          Sign Out
-                        </button>
-                      </form>
+                      <button
+                        onClick={handleSignOut}
+                        className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Sign Out
+                      </button>
                     </div>
                   </div>
                 </div>

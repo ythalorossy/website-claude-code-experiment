@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { authOptions } from '@/lib/auth';
+import { AdminSignOutButton } from '@/components/AdminSignOutButton';
 
 export default async function AdminLayout({
   children,
@@ -11,7 +12,7 @@ export default async function AdminLayout({
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== 'ADMIN') {
-    redirect('/api/auth/signin?callbackUrl=/admin');
+    redirect('/auth/signin?callbackUrl=/admin');
   }
 
   return (
@@ -42,12 +43,7 @@ export default async function AdminLayout({
           </Link>
         </nav>
         <div className="absolute bottom-0 w-64 p-4">
-          <Link
-            href="/api/auth/signout"
-            className="block rounded px-4 py-2 text-center bg-gray-800 hover:bg-gray-700"
-          >
-            Sign Out
-          </Link>
+          <AdminSignOutButton />
         </div>
       </aside>
       <main className="flex-1 p-8 bg-gray-50 dark:bg-gray-900">{children}</main>
