@@ -13,7 +13,8 @@ export default function SignInPage() {
   const [error, setError] = useState('');
 
   const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl: '/admin' });
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+    signIn('google', { callbackUrl: `${baseUrl}/auth/post-login` });
   };
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
@@ -30,7 +31,14 @@ export default function SignInPage() {
       if (result?.error) {
         setError('Invalid email. Please use an email that exists in the database.');
       } else {
-        router.push('/admin');
+        // Fetch user role to determine redirect
+        const res = await fetch('/api/auth/role');
+        if (res.ok) {
+          const { role } = await res.json();
+          router.push(role === 'ADMIN' ? '/admin' : '/');
+        } else {
+          router.push('/');
+        }
         router.refresh();
       }
     } catch {

@@ -7,6 +7,17 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from './db';
 
 export const authOptions: NextAuthOptions = {
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+  },
   providers: [
     // Google OAuth
     // @ts-ignore
@@ -75,6 +86,10 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/signin',
   },
   callbacks: {
+    async signIn({ user, account }) {
+      // For OAuth sign-ins, we'll handle redirect client-side after session is established
+      return true;
+    },
     async jwt({ token, user }) {
       // Always fetch role from database to ensure it's up to date
       if (token.email) {
