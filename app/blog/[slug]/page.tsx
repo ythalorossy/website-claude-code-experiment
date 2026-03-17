@@ -1,7 +1,10 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import { formatDate } from '@/lib/utils';
+import { ClapButton } from '@/components/ClapButton';
 
 interface PageProps {
   params: { slug: string };
@@ -29,6 +32,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
+  const session = await getServerSession(authOptions);
+
   const post = await prisma.post.findUnique({
     where: { slug: params.slug },
     include: { author: { select: { name: true } } },
@@ -36,6 +41,25 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   if (!post || post.status !== 'PUBLISHED') {
     notFound();
+  }
+
+  // Get clap count
+  const clapCount = await prisma.clap.count({
+    where: { postId: post.id },
+  });
+
+  // Check if current user has clapped
+  let hasClapped = false;
+  if (session?.user?.id) {
+    const userClap = await prisma.clap.findUnique({
+      where: {
+        userId_postId: {
+          userId: session.user.id,
+          postId: post.id,
+        },
+      },
+    });
+    hasClapped = !!userClap;
   }
 
   return (
@@ -63,6 +87,15 @@ export default async function BlogPostPage({ params }: PageProps) {
             </div>
           )}
         </header>
+
+        {/* Clap Button */}
+        <div className="mb-8">
+          <ClapButton
+            postId={post.id}
+            initialClapCount={clapCount}
+            initialHasClapped={hasClapped}
+          />
+        </div>
 
         <div className="prose prose-lg dark:prose-invert max-w-none">
           {/* Render MDX content - in a real implementation, use next-mdx-remote or similar */}

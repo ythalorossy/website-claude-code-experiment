@@ -29,6 +29,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   posts         Post[]
+  claps         Clap[]
 }
 
 model Account {
@@ -79,7 +80,22 @@ model Post {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
+  claps       Clap[]
+
   @@index([authorId])
   @@index([status])
   @@index([slug])
+}
+
+model Clap {
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId]) // One clap per user per post
+  @@index([postId])
 }
