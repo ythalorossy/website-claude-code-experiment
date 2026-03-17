@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import { formatDate } from '@/lib/utils';
 import { ClapButton } from '@/components/ClapButton';
+import { CommentSection } from '@/components/CommentSection';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -63,6 +64,28 @@ export default async function BlogPostPage({ params }: PageProps) {
     });
     hasClapped = !!userClap;
   }
+
+  // Get comments
+  const comments = await prisma.comment.findMany({
+    where: { postId: post.id },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          email: true,
+        },
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const commentsData = comments.map((comment) => ({
+    ...comment,
+    createdAt: comment.createdAt.toISOString(),
+    updatedAt: comment.updatedAt.toISOString(),
+  }));
 
   return (
     <article className="container mx-auto py-12 md:py-24">
@@ -123,6 +146,9 @@ export default async function BlogPostPage({ params }: PageProps) {
             return null;
           })}
         </div>
+
+        {/* Comments Section */}
+        <CommentSection postId={post.id} initialComments={commentsData} />
       </div>
     </article>
   );

@@ -30,6 +30,7 @@ model User {
   sessions      Session[]
   posts         Post[]
   claps         Clap[]
+  comments      Comment[]
 }
 
 model Account {
@@ -81,6 +82,7 @@ model Post {
   updatedAt   DateTime   @updatedAt
 
   claps       Clap[]
+  comments    Comment[]
 
   @@index([authorId])
   @@index([status])
@@ -98,4 +100,19 @@ model Clap {
 
   @@unique([userId, postId]) // One clap per user per post
   @@index([postId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text // Rich text content from TipTap
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([userId])
 }
