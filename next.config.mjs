@@ -10,9 +10,6 @@ const nextConfig = {
       { protocol: 'https', hostname: '**' },
     ],
   },
-  experimental: {
-    mdxRs: true,
-  },
   async headers() {
     return [
       {
