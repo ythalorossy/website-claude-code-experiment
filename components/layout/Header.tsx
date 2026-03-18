@@ -36,7 +36,7 @@ export function Header() {
               <span className="text-white font-bold text-sm">M</span>
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent">
-              Marketing
+              Software Engineering
             </span>
           </Link>
           <nav className="flex items-center gap-4">
@@ -59,7 +59,7 @@ export function Header() {
             <span className="text-white font-bold text-sm">M</span>
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent">
-            Marketing
+            Software Engineering
           </span>
         </Link>
         <nav className="flex items-center gap-4">

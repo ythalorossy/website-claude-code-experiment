@@ -6,17 +6,17 @@ import { SessionProvider } from '@/components/providers/SessionProvider';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Marketing Site',
-    template: '%s | Marketing Site',
+    default: 'Software Engineering',
+    template: '%s | Software Engineering',
   },
-  description: 'A modern marketing website with blog and admin CMS',
-  keywords: ['marketing', 'blog', 'nextjs', 'cms'],
-  authors: [{ name: 'Marketing Site' }],
+  description: 'A software engineering blog with admin CMS',
+  keywords: ['software engineering', 'blog', 'nextjs', 'cms'],
+  authors: [{ name: 'Software Engineering' }],
   openGraph: {
-    title: 'Marketing Site',
-    description: 'A modern marketing website with blog and admin CMS',
+    title: 'Software Engineering',
+    description: 'A software engineering blog with admin CMS',
     url: process.env.NEXT_PUBLIC_BASE_URL || 'https://example.com',
-    siteName: 'Marketing Site',
+    siteName: 'Software Engineering',
     locale: 'en_US',
     type: 'website',
   },

@@ -1,13 +1,13 @@
-# Marketing Website with Admin CMS
+# Software Engineering Blog with Admin CMS
 
-A modern, production-ready marketing website built with Next.js 14, featuring a blog with MDX support and a full admin CMS.
+A modern, production-ready software engineering blog built with Next.js, featuring a blog and a full admin CMS.
 
 ## Features
 
-- **Next.js 14** with App Router and React Server Components
+- **Next.js 16** with App Router and React Server Components
 - **PostgreSQL** with Prisma ORM
 - **NextAuth.js** with Google OAuth and Email authentication
-- **MDX Blog** with syntax highlighting (Shiki)
+- **Blog** with rich content support
 - **Admin CMS** with full CRUD operations and optimistic UI
 - **TypeScript** for type safety
 - **Tailwind CSS** with dark mode support
@@ -16,13 +16,12 @@ A modern, production-ready marketing website built with Next.js 14, featuring a 
 
 ## Tech Stack
 
-- Next.js 14 (App Router)
-- React 18
+- Next.js 16 (App Router)
+- React 19
 - TypeScript
 - PostgreSQL + Prisma
 - NextAuth.js
 - Tailwind CSS
-- MDX + Shiki
 - Vitest + Playwright
 
 ## Prerequisites

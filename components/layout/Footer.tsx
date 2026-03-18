@@ -99,7 +99,7 @@ export function Footer() {
                 <span className="text-white font-bold text-xs">M</span>
               </div>
               <span className="text-sm text-gray-600 dark:text-gray-400">
-                &copy; {currentYear} Marketing Site. All rights reserved.
+                &copy; {currentYear} Software Engineering. All rights reserved.
               </span>
             </div>
             <div className="flex items-center gap-4">
