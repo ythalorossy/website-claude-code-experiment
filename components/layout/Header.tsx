@@ -42,6 +42,7 @@ export function Header() {
           <nav className="flex items-center gap-4">
             <Link href="/blog" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">Blog</Link>
             <Link href="/about" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">About</Link>
+            <Link href="/team" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">Team</Link>
             <Link href="/contact" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">Contact</Link>
             <ThemeToggle />
             <Button size="sm" className="btn-glow" disabled>Loading...</Button>
@@ -74,6 +75,12 @@ export function Header() {
             className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
           >
             About
+          </Link>
+          <Link
+            href="/team"
+            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+          >
+            Team
           </Link>
           <Link
             href="/contact"
