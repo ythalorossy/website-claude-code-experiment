@@ -33,7 +33,7 @@ export function Header() {
         <div className="container mx-auto px-4 flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-lg shadow-brand-500/25">
-              <span className="text-white font-bold text-sm">M</span>
+              <span className="text-white font-bold text-sm">YS</span>
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent">
               Software Engineering
@@ -56,7 +56,7 @@ export function Header() {
       <div className="container mx-auto px-4 flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center space-x-2 group">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-lg shadow-brand-500/25">
-            <span className="text-white font-bold text-sm">M</span>
+            <span className="text-white font-bold text-sm">YS</span>
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent">
             Software Engineering

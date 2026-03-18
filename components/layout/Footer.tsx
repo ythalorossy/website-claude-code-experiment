@@ -96,7 +96,7 @@ export function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center space-x-2">
               <div className="w-6 h-6 rounded-md bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center">
-                <span className="text-white font-bold text-xs">M</span>
+                <span className="text-white font-bold text-xs">YS</span>
               </div>
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 &copy; {currentYear} Software Engineering. All rights reserved.
