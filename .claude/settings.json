@@ -11,7 +11,18 @@
       "Bash(timeout 10 pnpm dev)",
       "Bash(pnpm prisma:*)",
       "Bash(pnpm build:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(pnpm list:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"chore: upgrade Next.js to 16.1.7 and migrate middleware to proxy:*)",
+      "Bash(git commit -m \"chore: remove unused MDX dependencies:*)",
+      "Bash(git commit:*)",
+      "WebFetch(domain:www.linkedin.com)",
+      "Bash(pnpm db:generate)",
+      "Bash(pnpm db:push)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\ysaldanha\\.claude\\plans"
     ]
   }
 }

@@ -26,9 +26,20 @@ export default async function HomePage() {
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">
-        {/* Background decoration */}
+        {/* Animated fluid gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-accent-50 dark:from-slate-950 dark:via-slate-900 dark:to-brand-950" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-r from-brand-500/20 via-accent-500/20 to-primary-500/20 rounded-full blur-3xl" />
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Blob 1 - Large violet/pink */}
+          <div className="absolute -top-1/4 -left-1/4 w-[150%] h-[150%] animate-fluid-blob-1 bg-gradient-to-br from-violet-600/60 via-fuchsia-600/50 to-pink-600/60 rounded-full blur-3xl" />
+          {/* Blob 2 - Bottom right cyan/blue */}
+          <div className="absolute -bottom-1/4 -right-1/4 w-[150%] h-[150%] animate-fluid-blob-2 bg-gradient-to-br from-cyan-600/60 via-blue-600/50 to-violet-600/60 rounded-full blur-3xl" />
+          {/* Blob 3 - Center amber/pink accent */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] animate-fluid-blob-3 bg-gradient-to-br from-amber-500/50 via-pink-600/50 to-rose-600/50 rounded-full blur-3xl" />
+          {/* Blob 4 - Subtle teal accent */}
+          <div className="absolute top-0 right-1/4 w-[80%] h-[80%] animate-fluid-blob-4 bg-gradient-to-br from-teal-500/40 via-cyan-600/40 to-blue-600/40 rounded-full blur-3xl" />
+          {/* Dark overlay for depth */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-white/60 dark:from-slate-950/60 dark:to-slate-950/60" />
+        </div>
 
         <div className="container relative">
           <div className="mx-auto max-w-4xl text-center">
