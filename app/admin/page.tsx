@@ -8,11 +8,12 @@ import { Button } from '@/components/ui/Button';
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
 
-  const [postCount, publishedCount, draftCount, userCount] = await Promise.all([
+  const [postCount, publishedCount, draftCount, userCount, teamMemberCount] = await Promise.all([
     prisma.post.count(),
     prisma.post.count({ where: { status: 'PUBLISHED' } }),
     prisma.post.count({ where: { status: 'DRAFT' } }),
     prisma.user.count(),
+    prisma.teamMember.count(),
   ]);
 
   return (
@@ -22,7 +23,7 @@ export default async function AdminDashboard() {
         <p className="text-gray-500 dark:text-gray-400">Welcome back, {session?.user?.name}</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
@@ -56,6 +57,15 @@ export default async function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{userCount}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Team Members</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">{teamMemberCount}</div>
           </CardContent>
         </Card>
       </div>
