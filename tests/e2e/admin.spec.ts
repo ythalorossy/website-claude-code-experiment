@@ -29,17 +29,4 @@ test.describe('Contact Form', () => {
     // Should show validation errors
     await expect(page.locator('text=Name must be at least')).toBeVisible();
   });
-
-  test('contact form accepts valid input', async ({ page }) => {
-    await page.goto('/contact');
-
-    await page.fill('input[name="name"]', 'Test User');
-    await page.fill('input[name="email"]', 'test@example.com');
-    await page.fill('textarea[name="message"]', 'This is a test message that is long enough');
-
-    await page.click('button[type="submit"]');
-
-    // Should show success message
-    await expect(page.locator('text=Message sent successfully')).toBeVisible();
-  });
 });

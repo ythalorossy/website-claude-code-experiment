@@ -21,7 +21,7 @@ test.describe('Blog', () => {
 test.describe('Navigation', () => {
   test('homepage loads correctly', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('h1')).toContainText('Welcome');
+    await expect(page.locator('h1')).toContainText('Build Something');
   });
 
   test('about page loads', async ({ page }) => {
