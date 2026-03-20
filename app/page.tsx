@@ -85,7 +85,7 @@ export default async function HomePage() {
 
       {/* Features Section */}
       <section className="py-20 md:py-28 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-5/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-white to-gray-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900" />
         <div className="container relative">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -217,10 +217,10 @@ export default async function HomePage() {
       )}
 
       {/* CTA Section */}
-      <section className="py-20 md:py-28 relative overflow-hidden bg-slate-900">
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800" />
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-500 rounded-full blur-3xl" />
+      <section className="py-20 md:py-28 relative overflow-hidden bg-gray-100 dark:bg-slate-900">
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800" />
+        <div className="absolute inset-0 opacity-20 dark:opacity-20">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-500/30 dark:bg-brand-500 rounded-full blur-3xl" />
         </div>
         <div className="container relative">
           <div className="text-center">

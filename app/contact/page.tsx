@@ -69,12 +69,13 @@ export default function ContactPage() {
             <CardDescription>Fill out the form below and we&apos;ll get back to you.</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" data-testid="contact-form">
               <Input
                 label="Name"
                 id="name"
                 placeholder="Your name"
                 error={errors.name?.message}
+                data-testid="contact-name-input"
                 {...register('name')}
               />
 
@@ -84,6 +85,7 @@ export default function ContactPage() {
                 type="email"
                 placeholder="your@email.com"
                 error={errors.email?.message}
+                data-testid="contact-email-input"
                 {...register('email')}
               />
 
@@ -93,11 +95,13 @@ export default function ContactPage() {
                 placeholder="Your message..."
                 rows={5}
                 error={errors.message?.message}
+                data-testid="contact-message-input"
                 {...register('message')}
               />
 
               {submitResult && (
                 <div
+                  data-testid="contact-result-message"
                   className={`rounded-md p-4 ${
                     submitResult.success
                       ? 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-400'
@@ -108,7 +112,7 @@ export default function ContactPage() {
                 </div>
               )}
 
-              <Button type="submit" disabled={isSubmitting} className="w-full">
+              <Button type="submit" disabled={isSubmitting} className="w-full" data-testid="contact-submit-button">
                 {isSubmitting ? 'Sending...' : 'Send Message'}
               </Button>
             </form>
