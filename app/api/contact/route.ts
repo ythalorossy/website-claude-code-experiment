@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { checkContactRateLimit } from '@/lib/rate-limit';
+import { sendContactEmail } from '@/lib/email';
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -28,11 +29,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // In a real application, you would:
-  // 1. Send an email notification
-  // 2. Store the contact submission in the database
+  try {
+    await sendContactEmail({
+      name: validatedFields.data.name,
+      email: validatedFields.data.email,
+      message: validatedFields.data.message,
+    });
+  } catch (error) {
+    console.error('Failed to send contact email:', error);
+    return NextResponse.json(
+      { message: 'Failed to send message. Please try again later.' },
+      { status: 500 }
+    );
+  }
 
-  // For now, we'll just return success
   return NextResponse.json(
     { message: 'Message sent successfully!' },
     { status: 200 }

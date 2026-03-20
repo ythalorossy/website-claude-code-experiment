@@ -19,7 +19,9 @@
       "Bash(git commit:*)",
       "WebFetch(domain:www.linkedin.com)",
       "Bash(pnpm db:generate)",
-      "Bash(pnpm db:push)"
+      "Bash(pnpm db:push)",
+      "Bash(pnpm e2e:*)",
+      "WebFetch(domain:platform.minimax.io)"
     ],
     "additionalDirectories": [
       "c:\\Users\\ysaldanha\\.claude\\plans"
