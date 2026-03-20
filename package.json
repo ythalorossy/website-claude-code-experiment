@@ -20,6 +20,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
     "@hookform/resolvers": "3.3.4",
     "@mdx-js/loader": "3.0.0",
     "@mdx-js/react": "3.0.0",

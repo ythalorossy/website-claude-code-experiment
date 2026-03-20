@@ -3,6 +3,7 @@ import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { SessionProvider } from '@/components/providers/SessionProvider';
+import { ChatWidget } from '@/components/chat/ChatWidget';
 
 export const metadata: Metadata = {
   title: {
@@ -67,6 +68,7 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
+          <ChatWidget />
         </SessionProvider>
       </body>
     </html>
