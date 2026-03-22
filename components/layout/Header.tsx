@@ -77,6 +77,12 @@ export function Header() {
             About
           </Link>
           <Link
+            href="/projects"
+            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+          >
+            Projects
+          </Link>
+          <Link
             href="/team"
             className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
           >

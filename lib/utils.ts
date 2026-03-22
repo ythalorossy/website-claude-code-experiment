@@ -22,6 +22,19 @@ export function formatDate(date: Date | string | null): string {
   }).format(new Date(date));
 }
 
+export function formatDateRange(startDate: Date | string | null, endDate: Date | string | null): string {
+  if (!startDate && !endDate) return '';
+  const start = startDate
+    ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short' }).format(new Date(startDate))
+    : '';
+  const end = endDate
+    ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short' }).format(new Date(endDate))
+    : 'Present';
+  if (start && end) return `${start} – ${end}`;
+  if (start) return `${start} – Present`;
+  return `Until ${end}`;
+}
+
 export function truncate(str: string, length: number): string {
   if (str.length <= length) return str;
   return str.slice(0, length) + '...';

@@ -36,6 +36,12 @@ export default async function AdminLayout({
             Posts
           </Link>
           <Link
+            href="/admin/projects"
+            className="block rounded px-4 py-2 hover:bg-gray-800"
+          >
+            Projects
+          </Link>
+          <Link
             href="/admin/team"
             className="block rounded px-4 py-2 hover:bg-gray-800"
           >
