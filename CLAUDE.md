@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`nextjs-marketing-cms` is a full-stack Next.js 16 application - a software engineering blog with an admin CMS. Uses PostgreSQL with Prisma ORM, NextAuth.js for authentication, and Tailwind CSS for styling.
+`nextjs-marketing-cms` is a full-stack Next.js 16 (React 19) application - a software engineering blog with an admin CMS. Uses PostgreSQL with Prisma ORM, NextAuth.js v4 for authentication, and Tailwind CSS for styling.
 
 ## Commands
 
@@ -36,9 +36,10 @@ pnpm db:studio    # Open Prisma Studio
 
 ### App Router Structure
 - `app/` - Next.js 16 App Router with file-based routing
+- `app/[locale]/` - Locale-prefixed public pages (about, blog, contact, projects, team)
 - `app/api/` - RESTful API routes (posts, team, comments, claps, contact, chat)
 - `app/admin/` - Protected admin CMS pages (require ADMIN role)
-- `app/blog/[slug]/` - Blog post detail pages
+- `app/blog/[slug]/` - Blog post detail pages (note: blog routes use `[locale]` prefix)
 
 ### Authentication (Two-Layer Protection)
 - NextAuth.js v4 with JWT strategy
@@ -50,8 +51,9 @@ pnpm db:studio    # Open Prisma Studio
 
 ### Internationalization
 - Uses `next-intl` for i18n support
-- Locale configured in `lib/i18n.ts`, messages in `messages/` directory
-- Currently supports: `en` (English only by default)
+- Routing configured in `i18n/routing.ts`, request config in `i18n/request.ts`
+- Messages stored in `messages/` directory (JSON files per locale)
+- Supported locales: `en`, `pt`, `es`
 
 ### Database Pattern
 - Prisma singleton imported from `@/lib/db` to prevent multiple instances
@@ -87,9 +89,11 @@ pnpm db:studio    # Open Prisma Studio
 | `lib/db.ts` | Prisma singleton |
 | `lib/utils.ts` | Utilities: `cn()`, `slugify()`, `formatDate()`, `truncate()` |
 | `lib/rate-limit.ts` | Rate limiting via `rate-limiter-flexible` (100 req/min general, 5 req/min for contact) |
+| `i18n/routing.ts` | next-intl routing configuration (locales, defaultLocale) |
+| `i18n/request.ts` | next-intl request config (locale detection, message loading) |
 | `components/ui/` | Reusable UI components (Card, Button, Input, etc.) |
 | `app/admin/layout.tsx` | Admin layout with role-based access control |
-| `proxy.ts` | NextAuth middleware protecting `/admin` routes via JWT token role check |
+| `proxy.ts` | Middleware: protects `/admin` routes via JWT role check, then passes to next-intl |
 
 ## Database Setup
 
