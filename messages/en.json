@@ -3,6 +3,8 @@
     "home": "Home",
     "about": "About",
     "blog": "Blog",
+    "team": "Team",
+    "projects": "Projects",
     "contact": "Contact",
     "signIn": "Sign In",
     "signOut": "Sign Out",
@@ -14,9 +16,30 @@
     "readBlog": "Read Blog",
     "learnMore": "Learn More"
   },
+  "About": {
+    "title": "About Us",
+    "subtitle": "We are dedicated to providing high-quality content and excellent service.",
+    "mission": "Our Mission",
+    "missionDesc": "Our mission is to create a modern, accessible, and performant web experience that serves our community with valuable content and resources.",
+    "whatWeDo": "What We Do",
+    "whatWeDoDesc": "We publish articles on technology, development, and best practices. Our team works hard to bring you the latest insights and tutorials.",
+    "howWeBuild": "How We Build",
+    "howWeBuildDesc": "Built with Next.js, PostgreSQL, and Tailwind CSS. Open source at heart, we believe in transparency and collaboration.",
+    "qualityOverQuantity": "Quality over quantity",
+    "qualityDesc": "We prioritize depth and substance in everything we create",
+    "accessibility": "Accessibility for all",
+    "accessibilityDesc": "Building inclusive experiences that work for everyone",
+    "performance": "Performance & speed",
+    "performanceDesc": "Blazing-fast load times and smooth interactions",
+    "continuousImprovement": "Continuous improvement",
+    "continuousDesc": "Always learning, evolving, and pushing boundaries",
+    "getInTouch": "Get in Touch",
+    "getInTouchDesc": "Have questions or want to collaborate? We'd love to hear from you.",
+    "contactBtn": "Contact Us"
+  },
   "Blog": {
     "title": "Blog",
-    "subtitle": "Read our latest articles",
+    "subtitle": "Read our latest articles and insights",
     "noPosts": "No posts found",
     "readMore": "Read more"
   },
@@ -30,9 +53,48 @@
     "success": "Message sent successfully!",
     "error": "Failed to send message"
   },
+  "Team": {
+    "title": "Our Team",
+    "subtitle": "Meet the software engineers behind this project",
+    "noMembers": "No team members yet."
+  },
+  "Projects": {
+    "title": "Our Projects",
+    "subtitle": "Explore our software projects, open-source contributions, and technical achievements",
+    "noProjects": "No projects yet.",
+    "active": "Active",
+    "archived": "Archived"
+  },
+  "Footer": {
+    "rights": "All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "language": "Language",
+    "product": "Product",
+    "about": "About",
+    "blog": "Blog",
+    "team": "Team",
+    "legal": "Legal",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact",
+    "contactUs": "Contact Us",
+    "social": "Social",
+    "twitter": "Twitter",
+    "gitHub": "GitHub",
+    "allSystemsOperational": "All systems operational"
+  },
+  "Auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password"
+  },
   "Admin": {
     "dashboard": "Dashboard",
     "posts": "Posts",
+    "projects": "Projects",
+    "team": "Team",
     "users": "Users",
     "newPost": "New Post",
     "editPost": "Edit Post",

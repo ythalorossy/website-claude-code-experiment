@@ -14,7 +14,14 @@
     "allow": [
       "mcp__playwright__browser_navigate",
       "mcp__playwright__browser_take_screenshot",
-      "mcp__playwright__browser_close"
+      "mcp__playwright__browser_close",
+      "Bash(pnpm lint:*)",
+      "Bash(cd \"C:/Users/ysaldanha/lab/website\" && pnpm test 2>&1)",
+      "Bash(cd \"C:/Users/ysaldanha/lab/website\" && rm -rf .next && pnpm build 2>&1 | head -80)",
+      "Bash(npm view:*)",
+      "Bash(TURBOPACK=0 pnpm build 2>&1 | tail -50)",
+      "Bash(cd \"C:/Users/ysaldanha/lab/website\" && rm -rf .next && pnpm typecheck 2>&1 | head -50)",
+      "Bash(ls -la \"C:/Users/ysaldanha/lab/website/app/[locale]/\" 2>/dev/null || dir \"C:\\\\Users\\\\ysaldanha\\\\lab\\\\website\\\\app\\\\[locale]\")"
     ]
   }
 }

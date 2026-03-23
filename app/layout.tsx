@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
 import { SessionProvider } from '@/components/providers/SessionProvider';
 import { ChatWidget } from '@/components/chat/ChatWidget';
 
@@ -36,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -58,16 +56,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-white dark:bg-slate-950 text-gray-900 dark:text-gray-100">
         <SessionProvider>
-          <a href="#main-content" className="skip-link">
-            Skip to main content
-          </a>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main id="main-content" className="flex-1">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          {children}
           <ChatWidget />
         </SessionProvider>
       </body>

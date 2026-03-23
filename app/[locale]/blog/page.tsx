@@ -4,12 +4,17 @@ import { formatDate } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Metadata } from 'next';
 
+interface PageProps {
+  params: Promise<{ locale: string }>;
+}
+
 export const metadata: Metadata = {
   title: 'Blog',
   description: 'Read our latest articles',
 };
 
-export default async function BlogPage() {
+export default async function BlogPage({ params }: PageProps) {
+  const { locale } = await params;
   const posts = await prisma.post.findMany({
     where: { status: 'PUBLISHED' },
     orderBy: { publishedAt: 'desc' },
@@ -45,7 +50,7 @@ export default async function BlogPage() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
-              <Link key={post.id} href={`/blog/${post.slug}`}>
+              <Link key={post.id} href={`/${locale}/blog/${post.slug}`}>
                 <Card className="card-hover h-full border-0 shadow-lg shadow-brand-500/5 bg-white dark:bg-slate-900">
                   <CardHeader>
                     <div className="text-xs font-medium text-brand-600 dark:text-brand-400 mb-2">

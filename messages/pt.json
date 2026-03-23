@@ -1,0 +1,117 @@
+{
+  "Navigation": {
+    "home": "Início",
+    "about": "Sobre",
+    "blog": "Blog",
+    "team": "Equipe",
+    "projects": "Projetos",
+    "contact": "Contato",
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "admin": "Admin"
+  },
+  "Home": {
+    "title": "Bem-vindo ao Nosso Site",
+    "subtitle": "Um site moderno com blog",
+    "readBlog": "Ler Blog",
+    "learnMore": "Saiba Mais"
+  },
+  "About": {
+    "title": "Sobre Nós",
+    "subtitle": "Estamos dedicados a fornecer conteúdo de alta qualidade e excelente serviço.",
+    "mission": "Nossa Missão",
+    "missionDesc": "Nossa missão é criar uma experiência web moderna, acessível e de alto desempenho que serve nossa comunidade com conteúdo e recursos valiosos.",
+    "whatWeDo": "O Que Fazemos",
+    "whatWeDoDesc": "Publicamos artigos sobre tecnologia, desenvolvimento e boas práticas. Nossa equipe trabalha duro para trazer as últimas novidades e tutoriais.",
+    "howWeBuild": "Como Construímos",
+    "howWeBuildDesc": "Construído com Next.js, PostgreSQL e Tailwind CSS. Código aberto no coração, acreditamos em transparência e colaboração.",
+    "qualityOverQuantity": "Qualidade sobre quantidade",
+    "qualityDesc": "Priorizamos profundidade e substância em tudo que criamos",
+    "accessibility": "Acessibilidade para todos",
+    "accessibilityDesc": "Construindo experiências inclusivas que funcionam para todos",
+    "performance": "Performance e velocidade",
+    "performanceDesc": "Tempos de carregamento ultrarrápidos e interações suaves",
+    "continuousImprovement": "Melhoria contínua",
+    "continuousDesc": "Sempre aprendendo, evoluindo e superando limites",
+    "getInTouch": "Entre em Contato",
+    "getInTouchDesc": "Tem perguntas ou quer colaborar? Adoraríamos ouvir você.",
+    "contactBtn": "Contate-nos"
+  },
+  "Blog": {
+    "title": "Blog",
+    "subtitle": "Leia nossos últimos artigos e insights",
+    "noPosts": "Nenhum artigo encontrado",
+    "readMore": "Ler mais"
+  },
+  "Contact": {
+    "title": "Contate-nos",
+    "subtitle": "Entre em contato conosco",
+    "name": "Nome",
+    "email": "Email",
+    "message": "Mensagem",
+    "submit": "Enviar Mensagem",
+    "success": "Mensagem enviada com sucesso!",
+    "error": "Falha ao enviar mensagem"
+  },
+  "Team": {
+    "title": "Nossa Equipe",
+    "subtitle": "Conheça os engenheiros de software por trás deste projeto",
+    "noMembers": "Nenhum membro da equipe ainda."
+  },
+  "Projects": {
+    "title": "Nossos Projetos",
+    "subtitle": "Explore nossos projetos de software, contribuições open source e conquistas técnicas",
+    "noProjects": "Nenhum projeto ainda.",
+    "active": "Ativo",
+    "archived": "Arquivado"
+  },
+  "Footer": {
+    "rights": "Todos os direitos reservados.",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "language": "Idioma",
+    "product": "Produto",
+    "about": "Sobre",
+    "blog": "Blog",
+    "team": "Equipe",
+    "legal": "Legal",
+    "privacyPolicy": "Política de Privacidade",
+    "termsOfService": "Termos de Serviço",
+    "contact": "Contato",
+    "contactUs": "Fale Conosco",
+    "social": "Social",
+    "twitter": "Twitter",
+    "gitHub": "GitHub",
+    "allSystemsOperational": "Todos os sistemas operacionais"
+  },
+  "Auth": {
+    "signIn": "Entrar",
+    "signOut": "Sair",
+    "email": "Email",
+    "password": "Senha"
+  },
+  "Admin": {
+    "dashboard": "Painel",
+    "posts": "Artigos",
+    "projects": "Projetos",
+    "team": "Equipe",
+    "users": "Usuários",
+    "newPost": "Novo Artigo",
+    "editPost": "Editar Artigo",
+    "deletePost": "Excluir Artigo",
+    "publish": "Publicar",
+    "unpublish": "Despublicar",
+    "draft": "Rascunho",
+    "published": "Publicada"
+  },
+  "Common": {
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "create": "Criar",
+    "back": "Voltar"
+  }
+}

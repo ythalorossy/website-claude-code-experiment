@@ -36,17 +36,22 @@ pnpm db:studio    # Open Prisma Studio
 
 ### App Router Structure
 - `app/` - Next.js 16 App Router with file-based routing
-- `app/api/` - RESTful API routes (posts, team, comments, claps, contact)
+- `app/api/` - RESTful API routes (posts, team, comments, claps, contact, chat)
 - `app/admin/` - Protected admin CMS pages (require ADMIN role)
 - `app/blog/[slug]/` - Blog post detail pages
 
-### Authentication
+### Authentication (Two-Layer Protection)
 - NextAuth.js v4 with JWT strategy
+- **Layer 1**: `proxy.ts` middleware uses `withAuth` to intercept `/admin` routes before they reach pages
+- **Layer 2**: `app/admin/layout.tsx` uses `getServerSession()` as a runtime check
 - Two providers: Google OAuth + Credentials (email/password)
-- Role-based access: `USER` and `ADMIN` roles in database
-- Admin routes protected in `app/admin/layout.tsx` via `getServerSession()` check
-- API routes protected by checking `session.user.role === 'ADMIN'`
+- Role-based access: `USER` and `ADMIN` roles stored in database, fetched on each JWT/session update
 - Credentials provider accepts any email in the database (no password needed for admin seed account)
+
+### Internationalization
+- Uses `next-intl` for i18n support
+- Locale configured in `lib/i18n.ts`, messages in `messages/` directory
+- Currently supports: `en` (English only by default)
 
 ### Database Pattern
 - Prisma singleton imported from `@/lib/db` to prevent multiple instances
@@ -57,6 +62,7 @@ pnpm db:studio    # Open Prisma Studio
 - Tailwind CSS with custom brand colors (violet/fuchsia/cyan palette)
 - Dark mode via `class` strategy (default: dark)
 - Path alias `@/*` maps to project root
+- Uses `@tailwindcss/typography` for prose styling and `@tailwindcss/forms` for form elements
 
 ### Rich Text Editing
 - TipTap editor (`@tiptap/react`) used for post content and comments
@@ -76,13 +82,14 @@ pnpm db:studio    # Open Prisma Studio
 
 | File | Purpose |
 |------|---------|
-| `prisma/schema.prisma` | Database models (User, Post, Comment, Clap, TeamMember) |
-| `lib/auth.ts` | NextAuth configuration |
+| `prisma/schema.prisma` | Database models (User, Post, Comment, Clap, TeamMember, plus NextAuth Account/Session/VerificationToken) |
+| `lib/auth.ts` | NextAuth configuration with Google OAuth and Credentials providers |
 | `lib/db.ts` | Prisma singleton |
 | `lib/utils.ts` | Utilities: `cn()`, `slugify()`, `formatDate()`, `truncate()` |
+| `lib/rate-limit.ts` | Rate limiting via `rate-limiter-flexible` (100 req/min general, 5 req/min for contact) |
 | `components/ui/` | Reusable UI components (Card, Button, Input, etc.) |
 | `app/admin/layout.tsx` | Admin layout with role-based access control |
-| `proxy.ts` | Route protection for `/admin` paths |
+| `proxy.ts` | NextAuth middleware protecting `/admin` routes via JWT token role check |
 
 ## Database Setup
 

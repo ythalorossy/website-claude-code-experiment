@@ -8,7 +8,7 @@ import { ClapButton } from '@/components/ClapButton';
 import { CommentSection } from '@/components/CommentSection';
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

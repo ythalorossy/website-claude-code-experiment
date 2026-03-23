@@ -1,84 +1,122 @@
+'use client';
+
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { usePathname } from 'next/navigation';
+
+const languages = [
+  { code: 'en', label: 'English', flag: '🇺🇸' },
+  { code: 'pt', label: 'Português', flag: '🇧🇷' },
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
+];
 
 export function Footer() {
+  const pathname = usePathname();
+  const locale = pathname.split('/')[1] || 'en';
   const currentYear = new Date().getFullYear();
+  const t = useTranslations('Footer');
 
   return (
     <footer className="mt-auto border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-slate-950">
       <div className="container mx-auto px-4 py-12 md:py-16">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
           <div>
             <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">
-              Product
+              {t('product')}
             </h3>
             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
               <li>
                 <Link
-                  href="/about"
+                  href={`/${locale}/about`}
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
                 >
-                  About
+                  {t('about')}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/team"
+                  href={`/${locale}/team`}
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
                 >
-                  Team
+                  {t('team')}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/blog"
+                  href={`/${locale}/blog`}
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
                 >
-                  Blog
+                  {t('blog')}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
             <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">
-              Legal
+              {t('legal')}
             </h3>
             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
               <li>
                 <Link
-                  href="/privacy"
+                  href={`/${locale}/privacy`}
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
                 >
-                  Privacy Policy
+                  {t('privacyPolicy')}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/terms"
+                  href={`/${locale}/terms`}
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
                 >
-                  Terms of Service
+                  {t('termsOfService')}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
             <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">
-              Contact
+              {t('contact')}
             </h3>
             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
               <li>
                 <Link
-                  href="/contact"
+                  href={`/${locale}/contact`}
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
                 >
-                  Contact Us
+                  {t('contactUs')}
                 </Link>
               </li>
             </ul>
           </div>
           <div>
             <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">
-              Social
+              {t('language')}
+            </h3>
+            <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+              {languages.map((lang) => (
+                <li key={lang.code}>
+                  <Link
+                    href={`/${lang.code}`}
+                    className={`flex items-center gap-2 hover:text-brand-600 dark:hover:text-brand-400 transition-colors ${
+                      lang.code === locale ? 'text-brand-600 dark:text-brand-400 font-medium' : ''
+                    }`}
+                  >
+                    <span>{lang.flag}</span>
+                    <span>{lang.label}</span>
+                    {lang.code === locale && (
+                      <svg className="h-3 w-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">
+              {t('social')}
             </h3>
             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
               <li>
@@ -86,7 +124,7 @@ export function Footer() {
                   href="#"
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
                 >
-                  Twitter
+                  {t('twitter')}
                 </a>
               </li>
               <li>
@@ -94,7 +132,7 @@ export function Footer() {
                   href="#"
                   className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
                 >
-                  GitHub
+                  {t('gitHub')}
                 </a>
               </li>
             </ul>
@@ -107,13 +145,13 @@ export function Footer() {
                 <span className="text-white font-bold text-xs">YS</span>
               </div>
               <span className="text-sm text-gray-600 dark:text-gray-400">
-                &copy; {currentYear} Software Engineering. All rights reserved.
+                &copy; {currentYear} Software Engineering. {t('rights')}
               </span>
             </div>
             <div className="flex items-center gap-4">
               <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
               <span className="text-sm text-gray-500 dark:text-gray-500">
-                All systems operational
+                {t('allSystemsOperational')}
               </span>
             </div>
           </div>

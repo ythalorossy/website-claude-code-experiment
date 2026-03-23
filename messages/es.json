@@ -1,0 +1,117 @@
+{
+  "Navigation": {
+    "home": "Inicio",
+    "about": "Acerca de",
+    "blog": "Blog",
+    "team": "Equipo",
+    "projects": "Proyectos",
+    "contact": "Contacto",
+    "signIn": "Iniciar Sesion",
+    "signOut": "Cerrar Sesion",
+    "admin": "Admin"
+  },
+  "Home": {
+    "title": "Bienvenido a Nuestro Sitio",
+    "subtitle": "Un sitio web moderno con blog",
+    "readBlog": "Leer Blog",
+    "learnMore": "Saber Mas"
+  },
+  "About": {
+    "title": "Acerca de Nosotros",
+    "subtitle": "Estamos dedicados a proporcionar contenido de alta calidad y excelente servicio.",
+    "mission": "Nuestra Mision",
+    "missionDesc": "Nuestra mision es crear una experiencia web moderna, accesible y de alto rendimiento que sirva a nuestra comunidad con contenido y recursos valiosos.",
+    "whatWeDo": "Que Hacemos",
+    "whatWeDoDesc": "Publicamos articulos sobre tecnologia, desarrollo y mejores practicas. Nuestro equipo trabaja duro para traerles los ultimos conocimientos y tutoriales.",
+    "howWeBuild": "Como Construimos",
+    "howWeBuildDesc": "Construido con Next.js, PostgreSQL y Tailwind CSS. Codigo abierto de corazon, creemos en la transparencia y la colaboracion.",
+    "qualityOverQuantity": "Calidad sobre cantidad",
+    "qualityDesc": "Priorizamos la profundidad y la sustancia en todo lo que creamos",
+    "accessibility": "Accesibilidad para todos",
+    "accessibilityDesc": "Construyendo experiencias inclusivas que funcionan para todos",
+    "performance": "Rendimiento y velocidad",
+    "performanceDesc": "Tiempos de carga ultrarapidos e interacciones fluidas",
+    "continuousImprovement": "Mejora continua",
+    "continuousDesc": "Siempre aprendiendo, evolucionando y superando limites",
+    "getInTouch": "Ponerse en Contacto",
+    "getInTouchDesc": "Tienes preguntas o quieres colaborar? Nos encantaria saber de ti.",
+    "contactBtn": "Contactanos"
+  },
+  "Blog": {
+    "title": "Blog",
+    "subtitle": "Lee nuestros ultimos articulos e insights",
+    "noPosts": "No se encontraron articulos",
+    "readMore": "Leer mas"
+  },
+  "Contact": {
+    "title": "Contactanos",
+    "subtitle": "Ponete en contacto con nosotros",
+    "name": "Nombre",
+    "email": "Email",
+    "message": "Mensaje",
+    "submit": "Enviar Mensaje",
+    "success": "Mensaje enviado con exito!",
+    "error": "Error al enviar mensaje"
+  },
+  "Team": {
+    "title": "Nuestro Equipo",
+    "subtitle": "Conoce a los ingenieros de software detras de este proyecto",
+    "noMembers": "Aun no hay miembros del equipo."
+  },
+  "Projects": {
+    "title": "Nuestros Proyectos",
+    "subtitle": "Explora nuestros proyectos de software, contribuciones open source y logros tecnicos",
+    "noProjects": "Aun no hay proyectos.",
+    "active": "Activo",
+    "archived": "Archivado"
+  },
+  "Footer": {
+    "rights": "Todos los derechos reservados.",
+    "privacy": "Privacidad",
+    "terms": "Terminos",
+    "language": "Idioma",
+    "product": "Producto",
+    "about": "Acerca de",
+    "blog": "Blog",
+    "team": "Equipo",
+    "legal": "Legal",
+    "privacyPolicy": "Politica de Privacidad",
+    "termsOfService": "Terminos de Servicio",
+    "contact": "Contacto",
+    "contactUs": "Contactanos",
+    "social": "Social",
+    "twitter": "Twitter",
+    "gitHub": "GitHub",
+    "allSystemsOperational": "Todos los sistemas operativos"
+  },
+  "Auth": {
+    "signIn": "Iniciar Sesion",
+    "signOut": "Cerrar Sesion",
+    "email": "Email",
+    "password": "Contrasena"
+  },
+  "Admin": {
+    "dashboard": "Panel",
+    "posts": "Articulos",
+    "projects": "Proyectos",
+    "team": "Equipo",
+    "users": "Usuarios",
+    "newPost": "Nuevo Articulo",
+    "editPost": "Editar Articulo",
+    "deletePost": "Eliminar Articulo",
+    "publish": "Publicar",
+    "unpublish": "Despublicar",
+    "draft": "Borrador",
+    "published": "Publicada"
+  },
+  "Common": {
+    "loading": "Cargando...",
+    "error": "Ocurrio un error",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "back": "Volver"
+  }
+}

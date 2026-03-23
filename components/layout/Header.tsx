@@ -4,12 +4,16 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
+import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { LanguageSelector } from './LanguageSelector';
 
 export function Header() {
   const { data: session, status } = useSession();
   const [hasSession, setHasSession] = useState(false);
+  const t = useTranslations('Navigation');
+  const locale = useLocale();
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -31,7 +35,7 @@ export function Header() {
     return (
       <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
         <div className="container mx-auto px-4 flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2 group">
+          <Link href={`/${locale}`} className="flex items-center space-x-2 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-lg shadow-brand-500/25">
               <span className="text-white font-bold text-sm">YS</span>
             </div>
@@ -40,11 +44,13 @@ export function Header() {
             </span>
           </Link>
           <nav className="flex items-center gap-4">
-            <Link href="/blog" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">Blog</Link>
-            <Link href="/about" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">About</Link>
-            <Link href="/team" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">Team</Link>
-            <Link href="/contact" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">Contact</Link>
+            <Link href={`/${locale}/blog`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('blog')}</Link>
+            <Link href={`/${locale}/about`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('about')}</Link>
+            <Link href={`/${locale}/projects`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('projects')}</Link>
+            <Link href={`/${locale}/team`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('team')}</Link>
+            <Link href={`/${locale}/contact`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('contact')}</Link>
             <ThemeToggle />
+            <LanguageSelector />
             <Button size="sm" className="btn-glow" disabled>Loading...</Button>
           </nav>
         </div>
@@ -55,7 +61,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-4 flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2 group">
+        <Link href={`/${locale}`} className="flex items-center space-x-2 group">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-lg shadow-brand-500/25">
             <span className="text-white font-bold text-sm">YS</span>
           </div>
@@ -65,46 +71,49 @@ export function Header() {
         </Link>
         <nav className="flex items-center gap-4">
           <Link
-            href="/blog"
+            href={`/${locale}/blog`}
             className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
           >
-            Blog
+            {t('blog')}
           </Link>
           <Link
-            href="/about"
+            href={`/${locale}/about`}
             className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
           >
-            About
+            {t('about')}
           </Link>
           <Link
-            href="/projects"
+            href={`/${locale}/projects`}
             className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
           >
-            Projects
+            {t('projects')}
           </Link>
           <Link
-            href="/team"
+            href={`/${locale}/team`}
             className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
           >
-            Team
+            {t('team')}
           </Link>
           <Link
-            href="/contact"
+            href={`/${locale}/contact`}
             className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
           >
-            Contact
+            {t('contact')}
           </Link>
 
           {/* Theme Toggle */}
           <ThemeToggle />
 
+          {/* Language Selector */}
+          <LanguageSelector />
+
           {session ? (
             <div className="flex items-center gap-3">
               {/* Admin Link */}
               {user?.role === 'ADMIN' && (
-                <Link href="/admin">
+                <Link href={`/${locale}/admin`}>
                   <Button variant="primary" size="sm" className="btn-glow">
-                    Admin
+                    {t('admin')}
                   </Button>
                 </Link>
               )}
@@ -143,7 +152,7 @@ export function Header() {
                     {/* Menu Items */}
                     <div className="py-1">
                       <Link
-                        href="/profile"
+                        href={`/${locale}/profile`}
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,7 +162,7 @@ export function Header() {
                       </Link>
                       {user?.role === 'ADMIN' && (
                         <Link
-                          href="/admin"
+                          href={`/${locale}/admin`}
                           className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -171,7 +180,7 @@ export function Header() {
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        Sign Out
+                        {t('signOut')}
                       </button>
                     </div>
                   </div>
@@ -181,7 +190,7 @@ export function Header() {
           ) : (
             <Link href="/auth/signin">
               <Button size="sm" className="btn-glow">
-                Sign In
+                {t('signIn')}
               </Button>
             </Link>
           )}
