@@ -15,11 +15,12 @@ export function slugify(text: string): string {
 
 export function formatDate(date: Date | string | null): string {
   if (!date) return '';
+  const dateObj = typeof date === 'string' ? new Date(date + 'T00:00:00') : date;
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  }).format(new Date(date));
+  }).format(dateObj);
 }
 
 export function formatDateRange(startDate: Date | string | null, endDate: Date | string | null): string {
