@@ -24,6 +24,8 @@ pnpm test:watch   # Watch mode for unit tests
 pnpm e2e          # Run e2e tests (Playwright)
 pnpm e2e:ui       # Run e2e tests with UI
 
+**Setup issue:** If tests fail with "Failed to resolve import @testing-library/jest-dom", run `pnpm add -D @testing-library/jest-dom`
+
 # Database
 pnpm db:generate  # Generate Prisma client
 pnpm db:push      # Push schema to database
@@ -87,7 +89,7 @@ pnpm db:studio    # Open Prisma Studio
 | `prisma/schema.prisma` | Database models (User, Post, Comment, Clap, TeamMember, plus NextAuth Account/Session/VerificationToken) |
 | `lib/auth.ts` | NextAuth configuration with Google OAuth and Credentials providers |
 | `lib/db.ts` | Prisma singleton |
-| `lib/utils.ts` | Utilities: `cn()`, `slugify()`, `formatDate()`, `truncate()` |
+| `lib/utils.ts` | Utilities: `cn()`, `slugify()`, `formatDate()`, `truncate()` (Note: `new Date('YYYY-MM-DD')` parses as UTC midnight - append `'T00:00:00'` for local timezone) |
 | `lib/rate-limit.ts` | Rate limiting via `rate-limiter-flexible` (100 req/min general, 5 req/min for contact) |
 | `i18n/routing.ts` | next-intl routing configuration (locales, defaultLocale) |
 | `i18n/request.ts` | next-intl request config (locale detection, message loading) |
