@@ -43,9 +43,12 @@ export function DevToArticleCard({ article, truncate = false }: DevToArticleCard
               <span>{article.reading_time_minutes} min read</span>
             </div>
 
-            <div className="ml-auto flex items-center gap-1 text-brand-600 dark:text-brand-400 font-medium">
-              Read
-              <ArrowRight className="h-4 w-4" />
+            <div className="ml-auto flex items-center gap-3">
+              <span className="text-xs text-gray-400 dark:text-gray-500">@{article.username}</span>
+              <div className="flex items-center gap-1 text-brand-600 dark:text-brand-400 font-medium">
+                Read
+                <ArrowRight className="h-4 w-4" />
+              </div>
             </div>
           </div>
         </CardContent>

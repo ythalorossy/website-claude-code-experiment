@@ -6,6 +6,7 @@ export interface DevToArticle {
   reading_time_minutes: number;
   published_at: string;
   tag_list: string[];
+  username: string;
 }
 
 async function fetchUserArticles(username: string): Promise<DevToArticle[]> {
@@ -25,7 +26,8 @@ async function fetchUserArticles(username: string): Promise<DevToArticle[]> {
       return [];
     }
 
-    return (await res.json()) as DevToArticle[];
+    const articles = (await res.json()) as DevToArticle[];
+    return articles.map(article => ({ ...article, username }));
   } catch (error) {
     console.error(`Failed to fetch Dev.to articles for user ${username}:`, error);
     return [];
