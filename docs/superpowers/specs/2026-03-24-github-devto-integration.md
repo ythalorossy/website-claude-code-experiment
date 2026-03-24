@@ -38,14 +38,15 @@ Add GitHub and Dev.to API integrations to the portfolio website, displaying GitH
 - Both sections only render if respective env var is configured
 
 ### New `/projects` Page (under `[locale]`)
-- Grid of all public GitHub repos as cards
+- Server Component fetches all public GitHub repos (ISR `revalidate = 3600`)
+- Client Component `GitHubProjectsClient` handles sort/filter UI
+- Sort controls: stars (default), recently updated, name — sorted in-memory on client
 - Each card: name, description, language, stars, forks, link to GitHub
-- Sort by: stars (default), recently updated, name
 
 ### New `/writing` Page (under `[locale]`)
-- Grid of Dev.to articles as cards
+- Server Component fetches all Dev.to articles (ISR `revalidate = 3600`)
+- Sorted by Dev.to popularity (their default) — no client-side sorting needed
 - Each card: title, description excerpt, reaction count, reading time, date, link to full article
-- Sorted by popularity (default Dev.to ordering)
 
 ### New Components
 - `GitHubRepoCard` — displays a single repo (used on home + projects page)
@@ -98,8 +99,8 @@ DEV_TO_USERNAME=your_devto_handle
 | Create | `lib/github.ts` |
 | Create | `lib/devto.ts` |
 | Modify | `app/[locale]/page.tsx` — add Featured Projects + Latest Writing sections |
-| Create | `app/[locale]/projects/page.tsx` |
-| Create | `app/[locale]/writing/page.tsx` |
+| Create | `app/[locale]/projects/page.tsx` — Server Component, ISR `revalidate = 3600` |
+| Create | `app/[locale]/writing/page.tsx` — Server Component, ISR `revalidate = 3600` |
 | Modify | `messages/en.json`, `pt.json`, `es.json` — add nav + section keys |
 | Modify | `navigation.tsx` or header — add Projects + Writing links |
 
