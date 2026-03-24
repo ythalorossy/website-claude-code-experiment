@@ -2,6 +2,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { prisma } from '@/lib/db';
+import { getGithubRepos } from '@/lib/github';
+import { getDevToArticles } from '@/lib/devto';
+import { GitHubRepoCard } from '@/components/github/GitHubRepoCard';
+import { DevToArticleCard } from '@/components/devto/DevToArticleCard';
 
 export const metadata = {
   title: 'Home',
@@ -21,6 +25,9 @@ export default async function HomePage() {
       publishedAt: true,
     },
   });
+
+  const featuredRepos = await getGithubRepos(3);
+  const recentArticles = await getDevToArticles(3);
 
   return (
     <div className="flex flex-col">
@@ -211,6 +218,72 @@ export default async function HomePage() {
                   </svg>
                 </Button>
               </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Featured Projects Section */}
+      {featuredRepos.length > 0 && (
+        <section className="py-20 md:py-28 relative bg-gradient-to-b from-gray-50/50 to-white dark:from-slate-900/50 dark:to-slate-950">
+          <div className="container">
+            <div className="mb-12 flex items-center justify-between">
+              <div>
+                <h2 className="text-3xl font-bold mb-2">
+                  <span className="bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent">
+                    Featured Projects
+                  </span>
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  My open source work on GitHub
+                </p>
+              </div>
+              <Link href="/projects">
+                <Button variant="outline" className="hidden md:inline-flex">
+                  View All
+                  <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </Button>
+              </Link>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {featuredRepos.map((repo) => (
+                <GitHubRepoCard key={repo.name} repo={repo} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Latest Writing Section */}
+      {recentArticles.length > 0 && (
+        <section className="py-20 md:py-28 relative bg-gradient-to-b from-gray-50/50 to-white dark:from-slate-900/50 dark:to-slate-950">
+          <div className="container">
+            <div className="mb-12 flex items-center justify-between">
+              <div>
+                <h2 className="text-3xl font-bold mb-2">
+                  <span className="bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent">
+                    Latest Writing
+                  </span>
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Articles from my Dev.to publication
+                </p>
+              </div>
+              <Link href="/writing">
+                <Button variant="outline" className="hidden md:inline-flex">
+                  View All
+                  <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </Button>
+              </Link>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {recentArticles.map((article) => (
+                <DevToArticleCard key={article.url} article={article} />
+              ))}
             </div>
           </div>
         </section>

@@ -47,6 +47,8 @@ export function Header() {
             <Link href={`/${locale}/blog`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('blog')}</Link>
             <Link href={`/${locale}/about`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('about')}</Link>
             <Link href={`/${locale}/projects`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('projects')}</Link>
+            <Link href={`/${locale}/portfolio`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('portfolio')}</Link>
+            <Link href={`/${locale}/writing`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('writing')}</Link>
             <Link href={`/${locale}/team`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('team')}</Link>
             <Link href={`/${locale}/contact`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('contact')}</Link>
             <ThemeToggle />
@@ -87,6 +89,18 @@ export function Header() {
             className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
           >
             {t('projects')}
+          </Link>
+          <Link
+            href={`/${locale}/portfolio`}
+            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+          >
+            {t('portfolio')}
+          </Link>
+          <Link
+            href={`/${locale}/writing`}
+            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+          >
+            {t('writing')}
           </Link>
           <Link
             href={`/${locale}/team`}

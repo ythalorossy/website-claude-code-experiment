@@ -5,6 +5,8 @@
     "blog": "Blog",
     "team": "Equipe",
     "projects": "Projetos",
+    "portfolio": "Portfólio",
+    "writing": "Escritos",
     "contact": "Contato",
     "signIn": "Entrar",
     "signOut": "Sair",
@@ -59,11 +61,21 @@
     "noMembers": "Nenhum membro da equipe ainda."
   },
   "Projects": {
+    "title": "Meus Projetos",
+    "subtitle": "Meus repositórios GitHub e contribuições open source",
+    "noProjects": "Projetos indisponíveis."
+  },
+  "Portfolio": {
     "title": "Nossos Projetos",
     "subtitle": "Explore nossos projetos de software, contribuições open source e conquistas técnicas",
     "noProjects": "Nenhum projeto ainda.",
     "active": "Ativo",
     "archived": "Arquivado"
+  },
+  "Writing": {
+    "title": "Escritos",
+    "subtitle": "Artigos técnicos, tutoriais e insights do Dev.to",
+    "noArticles": "Artigos indisponíveis."
   },
   "Footer": {
     "rights": "Todos os direitos reservados.",

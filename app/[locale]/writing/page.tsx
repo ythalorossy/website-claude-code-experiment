@@ -1,16 +1,16 @@
 import { Metadata } from 'next';
-import { getGithubRepos } from '@/lib/github';
-import { GitHubProjectsClient } from '@/components/github/GitHubProjectsClient';
+import { getDevToArticles } from '@/lib/devto';
+import { DevToArticleCard } from '@/components/devto/DevToArticleCard';
 
 export const metadata: Metadata = {
-  title: 'Projects',
-  description: 'My GitHub repositories and open source contributions',
+  title: 'Writing',
+  description: 'My articles and technical writing on Dev.to',
 };
 
 export const revalidate = 3600;
 
-export default async function ProjectsPage() {
-  const repos = await getGithubRepos(100);
+export default async function WritingPage() {
+  const articles = await getDevToArticles(30);
 
   return (
     <div className="min-h-screen">
@@ -20,26 +20,30 @@ export default async function ProjectsPage() {
         <div className="container relative mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600 bg-clip-text text-5xl font-bold tracking-tight text-transparent dark:from-violet-400 dark:via-fuchsia-400 dark:to-cyan-400 md:text-6xl">
-              My Projects
+              Writing
             </h1>
             <p className="mt-6 text-xl text-gray-600 dark:text-gray-400">
-              Explore my GitHub repositories, open-source contributions, and technical work
+              Technical articles, tutorials, and insights from my Dev.to publication
             </p>
           </div>
         </div>
       </section>
 
-      {/* Projects Section */}
+      {/* Articles Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          {repos.length === 0 ? (
+          {articles.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 dark:text-gray-400">
-                Projects unavailable. Set GITHUB_USERNAME in your environment to display your GitHub repositories.
+                Articles unavailable. Set DEV_TO_USERNAME in your environment to display your Dev.to articles.
               </p>
             </div>
           ) : (
-            <GitHubProjectsClient repos={repos} />
+            <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {articles.map((article) => (
+                <DevToArticleCard key={article.url} article={article} />
+              ))}
+            </div>
           )}
         </div>
       </section>
