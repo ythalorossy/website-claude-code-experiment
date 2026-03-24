@@ -76,7 +76,7 @@ Add GitHub and Dev.to API integrations to the portfolio website, displaying GitH
   positive_reactions_count: number
   reading_time_minutes: number
   published_at: string
-  tag_list: string[]
+  tag_list: string[] // displayed as small tag chips on the card
 }
 ```
 
@@ -93,9 +93,8 @@ DEV_TO_USERNAME=your_devto_handle
 | Action | File |
 |--------|------|
 | Create | `components/github/GitHubRepoCard.tsx` |
-| Create | `components/github/GitHubProjectsClient.tsx` |
+| Create | `components/github/GitHubProjectsClient.tsx` — handles sort controls for projects page |
 | Create | `components/devto/DevToArticleCard.tsx` |
-| Create | `components/devto/DevToArticlesClient.tsx` |
 | Create | `lib/github.ts` |
 | Create | `lib/devto.ts` |
 | Modify | `app/[locale]/page.tsx` — add Featured Projects + Latest Writing sections |
