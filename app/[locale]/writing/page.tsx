@@ -35,7 +35,7 @@ export default async function WritingPage() {
           {articles.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 dark:text-gray-400">
-                Articles unavailable. Set DEV_TO_USERNAME in your environment to display your Dev.to articles.
+                Articles unavailable. Set DEV_TO_USERNAMES in your environment to display your Dev.to articles.
               </p>
             </div>
           ) : (

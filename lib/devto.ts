@@ -8,13 +8,7 @@ export interface DevToArticle {
   tag_list: string[];
 }
 
-export async function getDevToArticles(limit = 6): Promise<DevToArticle[]> {
-  const username = process.env.DEV_TO_USERNAME;
-
-  if (!username) {
-    return [];
-  }
-
+async function fetchUserArticles(username: string): Promise<DevToArticle[]> {
   try {
     const res = await fetch(
       `https://dev.to/api/articles?username=${username}`,
@@ -27,14 +21,34 @@ export async function getDevToArticles(limit = 6): Promise<DevToArticle[]> {
     );
 
     if (!res.ok) {
-      console.error(`Dev.to API error: ${res.status} ${res.statusText}`);
+      console.error(`Dev.to API error for user ${username}: ${res.status} ${res.statusText}`);
       return [];
     }
 
-    const data: DevToArticle[] = await res.json();
-    return data.slice(0, limit);
+    return (await res.json()) as DevToArticle[];
   } catch (error) {
-    console.error('Failed to fetch Dev.to articles:', error);
+    console.error(`Failed to fetch Dev.to articles for user ${username}:`, error);
     return [];
   }
+}
+
+export async function getDevToArticles(limit = 30): Promise<DevToArticle[]> {
+  const usernamesEnv = process.env.DEV_TO_USERNAMES;
+
+  if (!usernamesEnv) {
+    return [];
+  }
+
+  const usernames = usernamesEnv.split(',').map(u => u.trim()).filter(Boolean);
+
+  if (usernames.length === 0) {
+    return [];
+  }
+
+  const results = await Promise.all(usernames.map(fetchUserArticles));
+  const allArticles = results.flat();
+
+  return allArticles.sort(
+    (a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
+  ).slice(0, limit);
 }
