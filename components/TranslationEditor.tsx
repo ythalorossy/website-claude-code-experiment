@@ -71,6 +71,7 @@ export function TranslationEditor({ post, postId }: TranslationEditorProps) {
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Translation saved!' });
+        window.location.reload();
       } else {
         const data = await response.json();
         setMessage({ type: 'error', text: data.error || 'Failed to save' });

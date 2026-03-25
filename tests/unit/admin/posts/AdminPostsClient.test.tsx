@@ -11,6 +11,7 @@ describe('AdminPostsClient', () => {
   const initialPosts = [
     { id: '1', title: 'Post 1', slug: 'post-1', status: 'DRAFT' as const, updatedAt: '2024-01-01T00:00:00Z', translations: [] },
     { id: '2', title: 'Post 2', slug: 'post-2', status: 'PUBLISHED' as const, updatedAt: '2024-01-02T00:00:00Z', translations: [] },
+    { id: '3', title: 'Post 3', slug: 'post-3', status: 'DRAFT' as const, updatedAt: '2024-01-03T00:00:00Z', translations: [] },
   ];
 
   beforeEach(() => {
@@ -23,8 +24,8 @@ describe('AdminPostsClient', () => {
   it('updates status optimistically when toggleStatus is called', async () => {
     render(<AdminPostsClient initialPosts={initialPosts} />);
 
-    // Find the DRAFT button (post 1)
-    const draftBadge = screen.getByText('DRAFT');
+    // Find the first DRAFT button (post 1)
+    const draftBadge = screen.getAllByText('DRAFT')[0];
     expect(draftBadge).toBeInTheDocument();
 
     // Click the toggle button
@@ -32,7 +33,8 @@ describe('AdminPostsClient', () => {
 
     // Should immediately show PUBLISHED (optimistic update)
     await waitFor(() => {
-      expect(screen.getByText('PUBLISHED')).toBeInTheDocument();
+      // Use getAllByText since there are multiple PUBLISHED badges
+      expect(screen.getAllByText('PUBLISHED').length).toBeGreaterThan(1);
     });
 
     // Verify fetch was called
@@ -42,8 +44,8 @@ describe('AdminPostsClient', () => {
   it('toggles back to DRAFT when clicking PUBLISHED button', async () => {
     render(<AdminPostsClient initialPosts={initialPosts} />);
 
-    // Find the PUBLISHED button (post 2)
-    const publishedBadge = screen.getByText('PUBLISHED');
+    // Find the first PUBLISHED button
+    const publishedBadge = screen.getAllByText('PUBLISHED')[0];
     expect(publishedBadge).toBeInTheDocument();
 
     // Click the toggle button
@@ -51,15 +53,15 @@ describe('AdminPostsClient', () => {
 
     // Should immediately show DRAFT (optimistic update)
     await waitFor(() => {
-      expect(screen.getByText('DRAFT')).toBeInTheDocument();
+      expect(screen.getAllByText('DRAFT').length).toBeGreaterThan(1);
     });
   });
 
   it('rapid toggles: second toggle uses fresh state', async () => {
     render(<AdminPostsClient initialPosts={initialPosts} />);
 
-    // Get the DRAFT badge for post 1
-    const draftBadge = screen.getByText('DRAFT');
+    // Get the first DRAFT badge (post 1)
+    const draftBadge = screen.getAllByText('DRAFT')[0];
 
     // Mock fetch to resolve with a delay to simulate network latency
     let resolveFetch: (value: unknown) => void;
@@ -75,7 +77,7 @@ describe('AdminPostsClient', () => {
 
     // Second click immediately after - should use the NEW state, not original
     // This is where the stale closure bug would manifest
-    const draftBadgeAgain = screen.queryByText('DRAFT');
+    const draftBadgeAgain = screen.queryAllByText('DRAFT')[0];
     if (draftBadgeAgain) {
       // If DRAFT is still visible, click it again
       // With the bug, this might toggle back to original state instead of current
@@ -89,7 +91,7 @@ describe('AdminPostsClient', () => {
 
     // After all transitions complete, we should see PUBLISHED
     await waitFor(() => {
-      expect(screen.getByText('PUBLISHED')).toBeInTheDocument();
+      expect(screen.getAllByText('PUBLISHED').length).toBeGreaterThan(1);
     });
   });
 });
