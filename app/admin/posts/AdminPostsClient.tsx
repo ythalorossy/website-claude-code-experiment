@@ -1,8 +1,7 @@
 'use client';
 
-import { useOptimistic, startTransition } from 'react';
+import { useState, useTransition } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 
@@ -19,17 +18,15 @@ interface AdminPostsClientProps {
 }
 
 export function AdminPostsClient({ initialPosts }: AdminPostsClientProps) {
-  const [posts, setOptimisticPosts] = useOptimistic(
-    initialPosts,
-    (state: Post[], updatedPosts: Post[]) => updatedPosts
-  );
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [isPending, startTransition] = useTransition();
 
   async function toggleStatus(post: Post) {
     const newStatus = post.status === 'DRAFT' ? 'PUBLISHED' : 'DRAFT';
 
     startTransition(() => {
-      setOptimisticPosts(
-        posts.map((p) =>
+      setPosts((prev) =>
+        prev.map((p) =>
           p.id === post.id ? { ...p, status: newStatus } : p
         )
       );
@@ -42,7 +39,7 @@ export function AdminPostsClient({ initialPosts }: AdminPostsClientProps) {
         body: JSON.stringify({ status: newStatus }),
       });
     } catch {
-      // Error handling
+      // Error handling - revert on failure would go here
     }
   }
 
@@ -50,7 +47,7 @@ export function AdminPostsClient({ initialPosts }: AdminPostsClientProps) {
     if (!confirm('Are you sure you want to delete this post?')) return;
 
     startTransition(() => {
-      setOptimisticPosts(posts.filter((p) => p.id !== id));
+      setPosts((prev) => prev.filter((p) => p.id !== id));
     });
 
     try {
