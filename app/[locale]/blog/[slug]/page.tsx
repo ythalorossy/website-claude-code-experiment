@@ -12,39 +12,50 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const post = await prisma.post.findUnique({
     where: { slug },
-    select: { title: true, excerpt: true },
+    include: {
+      translations: true,
+    },
   });
 
   if (!post) {
     return { title: 'Post Not Found' };
   }
 
+  const translation = post.translations.find((t) => t.locale === locale);
+  const title = translation?.title || post.title;
+  const excerpt = translation?.excerpt || post.excerpt;
+
   return {
-    title: post.title,
-    description: post.excerpt || undefined,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt || undefined,
-      type: 'article',
-    },
+    title,
+    description: excerpt || undefined,
+    openGraph: { title, description: excerpt || undefined, type: 'article' },
   };
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const session = await getServerSession(authOptions);
 
   const post = await prisma.post.findUnique({
     where: { slug },
-    include: { author: { select: { name: true } } },
+    include: {
+      author: { select: { name: true } },
+      translations: true,
+    },
   });
 
   if (!post || post.status !== 'PUBLISHED') {
     notFound();
   }
+
+  // Get locale-aware content
+  const translation = post.translations.find((t) => t.locale === locale);
+  const displayTitle = translation?.title || post.title;
+  const displayContent = translation?.content || post.content;
+  const displayExcerpt = translation?.excerpt || post.excerpt;
 
   // Get clap count
   const clapCount = await prisma.clap.count({
@@ -91,7 +102,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     <article className="container mx-auto py-12 md:py-24">
       <div className="mx-auto max-w-4xl">
         <header className="mb-8">
-          <h1 className="text-4xl font-bold md:text-5xl">{post.title}</h1>
+          <h1 className="text-4xl font-bold md:text-5xl">{displayTitle}</h1>
           <div className="mt-4 flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
             <span>{post.author.name}</span>
             <span>·</span>
@@ -124,7 +135,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         <div
           className="prose prose-lg dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: displayContent }}
         />
 
         {/* Comments Section */}

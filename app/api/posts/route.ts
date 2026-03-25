@@ -18,6 +18,9 @@ export async function GET(request: NextRequest) {
       author: {
         select: { name: true, email: true },
       },
+      translations: {
+        select: { locale: true },
+      },
     },
   });
 

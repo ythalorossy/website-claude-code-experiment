@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { slugify } from '@/lib/utils';
 import { RichTextEditorHandle } from '@/components/RichTextEditor';
+import { TranslationEditor } from '@/components/TranslationEditor';
 
 const RichTextEditor = dynamic(
   () => import('@/components/RichTextEditor').then((m) => m.RichTextEditor),
@@ -30,6 +31,20 @@ const postSchema = z.object({
 
 type PostFormData = z.infer<typeof postSchema>;
 
+interface Translation {
+  locale: string;
+  title: string;
+  content: string;
+  excerpt?: string;
+}
+
+interface PostWithTranslations {
+  title: string;
+  content: string;
+  excerpt?: string;
+  translations: Translation[];
+}
+
 export default function EditPostPage() {
   const router = useRouter();
   const params = useParams();
@@ -38,6 +53,8 @@ export default function EditPostPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [initialContent, setInitialContent] = useState('');
+  const [showTranslations, setShowTranslations] = useState(false);
+  const [post, setPost] = useState<PostWithTranslations | null>(null);
   const editorRef = useRef<RichTextEditorHandle>(null);
 
   const {
@@ -66,6 +83,7 @@ export default function EditPostPage() {
         const response = await fetch(`/api/posts/${postId}`);
         if (response.ok) {
           const post = await response.json();
+          setPost(post);
           setValue('title', post.title);
           setValue('slug', post.slug);
           setValue('excerpt', post.excerpt || '');
@@ -222,6 +240,21 @@ export default function EditPostPage() {
                 Cancel
               </Button>
             </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowTranslations(!showTranslations)}
+              className="mt-4"
+            >
+              {showTranslations ? 'Hide' : 'Manage'} Translations
+            </Button>
+
+            {showTranslations && post && (
+              <div className="mt-6">
+                <TranslationEditor post={post} postId={postId} />
+              </div>
+            )}
           </form>
         </CardContent>
       </Card>

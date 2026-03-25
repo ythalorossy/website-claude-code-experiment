@@ -83,10 +83,25 @@ model Post {
 
   claps       Clap[]
   comments    Comment[]
+  translations PostTranslation[]
 
   @@index([authorId])
   @@index([status])
   @@index([slug])
+}
+
+model PostTranslation {
+  id        String  @id @default(cuid())
+  postId    String
+  locale    String  // 'pt' or 'es' only (not 'en')
+  title     String
+  content   String  @db.Text
+  excerpt   String? @db.Text
+
+  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, locale])
+  @@index([postId])
 }
 
 model Clap {
