@@ -12,6 +12,7 @@ type ToolbarConfig = 'comment' | 'post';
 export interface RichTextEditorHandle {
   getHTML: () => string;
   isEmpty: () => boolean;
+  setContent: (content: string) => void;
 }
 
 interface RichTextEditorProps {
@@ -160,6 +161,7 @@ export const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorPro
     useImperativeHandle(_ref, () => ({
       getHTML: () => editor?.getHTML() ?? '',
       isEmpty: () => editor?.isEmpty ?? true,
+      setContent: (content: string) => editor?.commands.setContent(content),
     }));
 
     if (!editor) {
