@@ -15,9 +15,16 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  await prisma.postTranslation.delete({
-    where: { postId_locale: { postId: id, locale } },
-  });
+  try {
+    await prisma.postTranslation.delete({
+      where: { postId_locale: { postId: id, locale } },
+    });
+  } catch (error: unknown) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
+      return NextResponse.json({ error: 'Translation not found' }, { status: 404 });
+    }
+    throw error;
+  }
 
   return NextResponse.json({ success: true });
 }
