@@ -42,7 +42,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   }
 
   const body = await request.json();
-  const { title, slug, contentMDX, excerpt, status, tags } = body;
+  const { title, slug, content, excerpt, status, tags } = body;
 
   // Check if slug is being changed and if it's unique
   if (slug) {
@@ -62,7 +62,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
   if (title) updateData.title = title;
   if (slug) updateData.slug = slugify(slug);
-  if (contentMDX) updateData.contentMDX = contentMDX;
+  if (content) updateData.content = content;
   if (excerpt !== undefined) updateData.excerpt = excerpt;
   if (status) {
     updateData.status = status;

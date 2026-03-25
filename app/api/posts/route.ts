@@ -38,9 +38,9 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { title, slug, contentMDX, excerpt, status, tags } = body;
+  const { title, slug, content, excerpt, status, tags } = body;
 
-  if (!title || !slug || !contentMDX) {
+  if (!title || !slug || !content) {
     return NextResponse.json(
       { error: 'Title, slug, and content are required' },
       { status: 400 }
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     data: {
       title,
       slug: slugify(slug),
-      contentMDX,
+      content,
       excerpt,
       status: status || 'DRAFT',
       tags: tags || [],

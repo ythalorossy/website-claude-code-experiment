@@ -19,7 +19,7 @@ async function main() {
     {
       title: 'Welcome to Our Blog',
       slug: 'welcome-to-our-blog',
-      contentMDX: `# Welcome to Our Blog
+      content: `# Welcome to Our Blog
 
 This is our first blog post built with Next.js and MDX.
 
@@ -52,7 +52,7 @@ Happy coding!`,
     {
       title: 'Building a Modern CMS with Next.js',
       slug: 'building-modern-cms-nextjs',
-      contentMDX: `# Building a Modern CMS with Next.js
+      content: `# Building a Modern CMS with Next.js
 
 In this post, we'll explore how to build a content management system using Next.js 14, Prisma, and PostgreSQL.
 
@@ -84,7 +84,7 @@ Building a modern CMS has never been easier with Next.js 14 and the App Router.`
     {
       title: 'Understanding Server Components in Next.js',
       slug: 'understanding-server-components',
-      contentMDX: `# Understanding Server Components in Next.js
+      content: `# Understanding Server Components in Next.js
 
 Server Components are a game-changer in Next.js 14. Let's dive deep into how they work.
 

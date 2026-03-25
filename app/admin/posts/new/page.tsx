@@ -4,18 +4,25 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { slugify } from '@/lib/utils';
+import { RichTextEditorHandle } from '@/components/RichTextEditor';
+
+const RichTextEditor = dynamic(
+  () => import('@/components/RichTextEditor').then((m) => m.RichTextEditor),
+  { ssr: false }
+);
 
 const postSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   slug: z.string().min(1, 'Slug is required').regex(/^[a-z0-9-]+$/, 'Slug must be lowercase with dashes'),
-  contentMDX: z.string().min(1, 'Content is required'),
+  content: z.string().min(1, 'Content is required'),
   excerpt: z.string().optional(),
   tags: z.string().optional(),
   status: z.enum(['DRAFT', 'PUBLISHED']),
@@ -27,6 +34,7 @@ export default function NewPostPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const editorRef = useRef<RichTextEditorHandle>(null);
 
   const {
     register,
@@ -39,7 +47,7 @@ export default function NewPostPage() {
     defaultValues: {
       title: '',
       slug: '',
-      contentMDX: '',
+      content: '',
       excerpt: '',
       tags: '',
       status: 'DRAFT',
@@ -55,10 +63,11 @@ export default function NewPostPage() {
   }
 
   async function onSubmit(data: PostFormData) {
+    const content = editorRef.current?.getHTML() ?? '';
     setIsSubmitting(true);
     setError(null);
 
-    const tags = data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const tags = data.tags ? data.tags.split(',').map((t) => t.trim()).filter(Boolean) : [];
 
     try {
       const response = await fetch('/api/posts', {
@@ -66,6 +75,7 @@ export default function NewPostPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...data,
+          content,
           tags,
         }),
       });
@@ -113,14 +123,21 @@ export default function NewPostPage() {
               {...register('slug')}
             />
 
-            <Textarea
-              label="Content (MDX)"
-              id="contentMDX"
-              placeholder="Write your content in MDX format..."
-              rows={20}
-              error={errors.contentMDX?.message}
-              {...register('contentMDX')}
-            />
+            <div>
+              <label className="block text-sm font-medium mb-1">Content</label>
+              <RichTextEditor
+                ref={editorRef}
+                toolbar="post"
+                placeholder="Write your content..."
+                onUpdate={() => {
+                  const html = editorRef.current?.getHTML() ?? '';
+                  setValue('content', html, { shouldValidate: true });
+                }}
+              />
+              {errors.content && (
+                <p className="mt-1 text-sm text-red-500">{errors.content.message}</p>
+              )}
+            </div>
 
             <Textarea
               label="Excerpt"

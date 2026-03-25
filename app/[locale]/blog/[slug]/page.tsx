@@ -122,30 +122,10 @@ export default async function BlogPostPage({ params }: PageProps) {
           />
         </div>
 
-        <div className="prose prose-lg dark:prose-invert max-w-none">
-          {/* Render MDX content - in a real implementation, use next-mdx-remote or similar */}
-          {post.contentMDX.split('\n').map((line, i) => {
-            if (line.startsWith('# ')) {
-              return <h1 key={i}>{line.slice(2)}</h1>;
-            }
-            if (line.startsWith('## ')) {
-              return <h2 key={i}>{line.slice(3)}</h2>;
-            }
-            if (line.startsWith('### ')) {
-              return <h3 key={i}>{line.slice(4)}</h3>;
-            }
-            if (line.startsWith('- ')) {
-              return <li key={i}>{line.slice(2)}</li>;
-            }
-            if (line.startsWith('```')) {
-              return null;
-            }
-            if (line.trim()) {
-              return <p key={i}>{line}</p>;
-            }
-            return null;
-          })}
-        </div>
+        <div
+          className="prose prose-lg dark:prose-invert max-w-none"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
 
         {/* Comments Section */}
         <CommentSection postId={post.id} initialComments={commentsData} />

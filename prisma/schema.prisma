@@ -71,7 +71,7 @@ model Post {
   id          String     @id @default(cuid())
   title       String
   slug        String     @unique
-  contentMDX  String     @db.Text
+  content    String     @db.Text
   excerpt     String?    @db.Text
   status      PostStatus @default(DRAFT)
   tags        String[]   @default([])

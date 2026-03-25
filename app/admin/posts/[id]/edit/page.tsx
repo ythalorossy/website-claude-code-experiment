@@ -4,18 +4,25 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter, useParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { slugify } from '@/lib/utils';
+import { RichTextEditorHandle } from '@/components/RichTextEditor';
+
+const RichTextEditor = dynamic(
+  () => import('@/components/RichTextEditor').then((m) => m.RichTextEditor),
+  { ssr: false }
+);
 
 const postSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   slug: z.string().min(1, 'Slug is required').regex(/^[a-z0-9-]+$/, 'Slug must be lowercase with dashes'),
-  contentMDX: z.string().min(1, 'Content is required'),
+  content: z.string().min(1, 'Content is required'),
   excerpt: z.string().optional(),
   tags: z.string().optional(),
   status: z.enum(['DRAFT', 'PUBLISHED']),
@@ -30,6 +37,8 @@ export default function EditPostPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialContent, setInitialContent] = useState('');
+  const editorRef = useRef<RichTextEditorHandle>(null);
 
   const {
     register,
@@ -42,7 +51,7 @@ export default function EditPostPage() {
     defaultValues: {
       title: '',
       slug: '',
-      contentMDX: '',
+      content: '',
       excerpt: '',
       tags: '',
       status: 'DRAFT',
@@ -51,7 +60,6 @@ export default function EditPostPage() {
 
   const title = watch('title');
 
-  // Fetch post data
   useEffect(() => {
     async function fetchPost() {
       try {
@@ -60,10 +68,10 @@ export default function EditPostPage() {
           const post = await response.json();
           setValue('title', post.title);
           setValue('slug', post.slug);
-          setValue('contentMDX', post.contentMDX);
           setValue('excerpt', post.excerpt || '');
           setValue('tags', post.tags?.join(', ') || '');
           setValue('status', post.status);
+          setInitialContent(post.content);
         }
       } catch (err) {
         console.error('Failed to fetch post:', err);
@@ -84,10 +92,11 @@ export default function EditPostPage() {
   }
 
   async function onSubmit(data: PostFormData) {
+    const content = editorRef.current?.getHTML() ?? '';
     setIsSubmitting(true);
     setError(null);
 
-    const tags = data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const tags = data.tags ? data.tags.split(',').map((t) => t.trim()).filter(Boolean) : [];
 
     try {
       const response = await fetch(`/api/posts/${postId}`, {
@@ -95,6 +104,7 @@ export default function EditPostPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...data,
+          content,
           tags,
         }),
       });
@@ -150,14 +160,22 @@ export default function EditPostPage() {
               {...register('slug')}
             />
 
-            <Textarea
-              label="Content (MDX)"
-              id="contentMDX"
-              placeholder="Write your content in MDX format..."
-              rows={20}
-              error={errors.contentMDX?.message}
-              {...register('contentMDX')}
-            />
+            <div>
+              <label className="block text-sm font-medium mb-1">Content</label>
+              <RichTextEditor
+                ref={editorRef}
+                toolbar="post"
+                placeholder="Write your content..."
+                content={initialContent}
+                onUpdate={() => {
+                  const html = editorRef.current?.getHTML() ?? '';
+                  setValue('content', html, { shouldValidate: true });
+                }}
+              />
+              {errors.content && (
+                <p className="mt-1 text-sm text-red-500">{errors.content.message}</p>
+              )}
+            </div>
 
             <Textarea
               label="Excerpt"
