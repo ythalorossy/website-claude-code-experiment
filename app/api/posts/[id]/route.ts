@@ -17,6 +17,9 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
       author: {
         select: { name: true, email: true },
       },
+      translations: {
+        select: { locale: true, title: true, content: true, excerpt: true },
+      },
     },
   });
 

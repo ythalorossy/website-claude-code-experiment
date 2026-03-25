@@ -25,7 +25,22 @@
       "Bash(pnpm test:*)",
       "mcp__plugin_context7_context7__resolve-library-id",
       "mcp__plugin_context7_context7__query-docs",
-      "Bash(pnpm exec:*)"
+      "Bash(pnpm exec:*)",
+      "Bash(cd \"C:\\\\Users\\\\ysaldanha\\\\lab\\\\website\" && pnpm db:seed 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\ysaldanha\\\\lab\\\\website\" && npx next lint 2>&1)",
+      "Bash(cd C:/Users/ysaldanha/lab/website && npx next lint 2>&1)",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_console_messages",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_network_requests",
+      "Bash(rm -rf C:/Users/ysaldanha/lab/website/.next && cd C:/Users/ysaldanha/lab/website && pnpm build 2>&1 | tail -30)",
+      "Bash(cd C:/Users/ysaldanha/lab/website && npx playwright test --reporter=list tests/e2e/ 2>&1 | head -50)",
+      "Bash(pnpm dev:*)",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_select_option",
+      "Bash(npx kill-port:*)"
     ]
   }
 }
