@@ -11,6 +11,7 @@ interface Post {
   slug: string;
   status: 'DRAFT' | 'PUBLISHED';
   updatedAt: string;
+  translations: { locale: string }[];
 }
 
 interface AdminPostsClientProps {
@@ -82,6 +83,7 @@ export function AdminPostsClient({ initialPosts }: AdminPostsClientProps) {
                 <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Title</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Slug</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Languages</th>
                 <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
@@ -97,6 +99,21 @@ export function AdminPostsClient({ initialPosts }: AdminPostsClientProps) {
                   <tr key={post.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                     <td className="whitespace-nowrap px-6 py-4">
                       <span className="font-medium text-gray-900 dark:text-white">{post.title}</span>
+                      {post.translations && post.translations.length > 0 && (
+                        <div className="flex gap-1 mt-1">
+                          <span className="text-xs bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300 px-1.5 py-0.5 rounded">
+                            EN
+                          </span>
+                          {post.translations.map((t) => (
+                            <span
+                              key={t.locale}
+                              className="text-xs bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 px-1.5 py-0.5 rounded uppercase"
+                            >
+                              {t.locale}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">{post.slug}</td>
                     <td className="whitespace-nowrap px-6 py-4">
