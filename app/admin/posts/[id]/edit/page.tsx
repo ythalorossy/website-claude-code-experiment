@@ -31,6 +31,20 @@ const postSchema = z.object({
 
 type PostFormData = z.infer<typeof postSchema>;
 
+interface Translation {
+  locale: string;
+  title: string;
+  content: string;
+  excerpt?: string;
+}
+
+interface PostWithTranslations {
+  title: string;
+  content: string;
+  excerpt?: string;
+  translations: Translation[];
+}
+
 export default function EditPostPage() {
   const router = useRouter();
   const params = useParams();
@@ -40,7 +54,7 @@ export default function EditPostPage() {
   const [loading, setLoading] = useState(true);
   const [initialContent, setInitialContent] = useState('');
   const [showTranslations, setShowTranslations] = useState(false);
-  const [post, setPost] = useState<Record<string, unknown> | null>(null);
+  const [post, setPost] = useState<PostWithTranslations | null>(null);
   const editorRef = useRef<RichTextEditorHandle>(null);
 
   const {

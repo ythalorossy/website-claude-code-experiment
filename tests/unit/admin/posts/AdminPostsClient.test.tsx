@@ -9,8 +9,8 @@ global.fetch = mockFetch;
 
 describe('AdminPostsClient', () => {
   const initialPosts = [
-    { id: '1', title: 'Post 1', slug: 'post-1', status: 'DRAFT' as const, updatedAt: '2024-01-01T00:00:00Z' },
-    { id: '2', title: 'Post 2', slug: 'post-2', status: 'PUBLISHED' as const, updatedAt: '2024-01-02T00:00:00Z' },
+    { id: '1', title: 'Post 1', slug: 'post-1', status: 'DRAFT' as const, updatedAt: '2024-01-01T00:00:00Z', translations: [] },
+    { id: '2', title: 'Post 2', slug: 'post-2', status: 'PUBLISHED' as const, updatedAt: '2024-01-02T00:00:00Z', translations: [] },
   ];
 
   beforeEach(() => {

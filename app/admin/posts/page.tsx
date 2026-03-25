@@ -19,6 +19,9 @@ export default async function AdminPostsPage() {
       slug: true,
       status: true,
       updatedAt: true,
+      translations: {
+        select: { locale: true },
+      },
     },
   });
 
