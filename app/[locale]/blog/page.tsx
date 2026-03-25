@@ -18,15 +18,27 @@ export default async function BlogPage({ params }: PageProps) {
   const posts = await prisma.post.findMany({
     where: { status: 'PUBLISHED' },
     orderBy: { publishedAt: 'desc' },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      excerpt: true,
-      tags: true,
-      publishedAt: true,
+    include: {
       author: { select: { name: true } },
+      translations: {
+        select: { locale: true, title: true, excerpt: true },
+      },
     },
+  });
+
+  // Build locale-aware post data
+  const postsWithLocale = posts.map((post) => {
+    const translation = post.translations.find((t) => t.locale === locale);
+    return {
+      id: post.id,
+      title: translation?.title || post.title,
+      slug: post.slug,
+      excerpt: translation?.excerpt || post.excerpt,
+      tags: post.tags,
+      publishedAt: post.publishedAt,
+      author: post.author,
+      hasTranslation: !!translation,
+    };
   });
 
   return (
@@ -43,18 +55,25 @@ export default async function BlogPage({ params }: PageProps) {
           </p>
         </div>
 
-        {posts.length === 0 ? (
+        {postsWithLocale.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 dark:text-gray-400">No posts found.</p>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
+            {postsWithLocale.map((post) => (
               <Link key={post.id} href={`/${locale}/blog/${post.slug}`}>
                 <Card className="card-hover h-full border-0 shadow-lg shadow-brand-500/5 bg-white dark:bg-slate-900">
                   <CardHeader>
-                    <div className="text-xs font-medium text-brand-600 dark:text-brand-400 mb-2">
-                      {post.publishedAt ? formatDate(post.publishedAt) : ''}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-xs font-medium text-brand-600 dark:text-brand-400">
+                        {post.publishedAt ? formatDate(post.publishedAt) : ''}
+                      </div>
+                      {post.hasTranslation && (
+                        <span className="text-xs bg-accent-100 text-accent-700 dark:bg-accent-900/30 dark:text-accent-300 px-2 py-1 rounded-full uppercase">
+                          {locale}
+                        </span>
+                      )}
                     </div>
                     <CardTitle className="text-lg line-clamp-2 hover:text-brand-600 dark:hover:text-brand-400 transition-colors">
                       {post.title}
