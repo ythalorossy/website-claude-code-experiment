@@ -21,7 +21,8 @@ export function LanguageSelector() {
   const handleSelect = (newLocale: string) => {
     setIsOpen(false);
     startTransition(() => {
-      router.replace(`/${newLocale}`);
+      const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
+      router.replace(`/${newLocale}${pathWithoutLocale}`);
     });
   };
 
