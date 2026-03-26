@@ -57,6 +57,10 @@ pnpm db:studio    # Open Prisma Studio
 - Messages stored in `messages/` directory (JSON files per locale)
 - Supported locales: `en`, `pt`, `es`
 
+### Language Switching (LanguageSelector)
+- `components/layout/LanguageSelector.tsx` uses `router.replace(\`/${newLocale}\`)` which drops the path
+- To preserve path: `pathname.replace(\`/${locale}\`, '') || '/'` then `router.replace(\`/${newLocale}${pathWithoutLocale}\`)`
+
 ### Database Pattern
 - Prisma singleton imported from `@/lib/db` to prevent multiple instances
 - PostgreSQL via Docker (postgres:16)
