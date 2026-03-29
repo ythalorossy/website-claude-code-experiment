@@ -39,12 +39,7 @@ model Coin {
 
 - [ ] **Step 2: Add seedCoins() to prisma/seed.ts**
 
-Open `prisma/seed.ts`. Add import at the top:
-```typescript
-import { PrismaClient } from '@prisma/client';
-```
-
-Add `seedCoins()` function before `main()`:
+Open `prisma/seed.ts`. Note: `PrismaClient` is already imported at line 1. Add `seedCoins()` function before `main()`:
 ```typescript
 async function seedCoins() {
   const coins = [
@@ -1050,6 +1045,10 @@ Create `app/admin/crypto/coins/CoinsAdminClient.tsx`. This is the most complex c
 - Active toggle (PATCH only `isActive` field)
 - Toast notifications
 
+**IMPORTANT — Type design:** The raw API response from `GET /api/crypto/coins` returns Prisma objects where `id` is the database cuid (e.g. `"clr8j2abc..."`) and `coincapId` is the CoinCap ID (e.g. `"bitcoin"`). `CoinData.id` from `lib/crypto.ts` is the coincapId. These are different shapes.
+
+`CoinRow` is the shape used internally by the table and API calls. It has `id` as the db cuid and `coinId` as the CoinCap ID.
+
 ```typescript
 'use client';
 
@@ -1061,9 +1060,19 @@ interface CoinsAdminClientProps {
   initialCoins: CoinData[];
 }
 
-interface CoinRow extends CoinData {
-  createdAt?: string;
-  updatedAt?: string;
+/**
+ * Raw API response shape — id is db cuid (used for API calls),
+ * coinId is CoinCap ID (displayed in "CoinCap ID" column and used as hook param).
+ */
+interface CoinRow {
+  id: string;       // database cuid — used for PATCH/DELETE API calls
+  symbol: string;
+  name: string;
+  coinId: string;  // CoinCap ID — displayed in the "CoinCap ID" column
+  color: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface Toast {
@@ -1072,8 +1081,31 @@ interface Toast {
   message: string;
 }
 
+/**
+ * Map CoinData (lib/crypto shape, used by server component) to CoinRow.
+ * CoinData.id is the CoinCap ID. There is no db cuid for server-loaded coins yet.
+ * Use coincapId="placeholder" for hook calls until refetch brings real data.
+ */
+function toCoinRow(c: CoinData): CoinRow {
+  return {
+    id: `server-${c.id}`, // temporary id for server-loaded coins (coincapId-based)
+    symbol: c.symbol,
+    name: c.name,
+    coinId: c.id, // CoinData.id is coincapId
+    color: c.color,
+    isActive: c.isActive ?? true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+/** Map CoinRow to CoinData for passing to hooks */
+function toCoinData(row: CoinRow): CoinData {
+  return { symbol: row.symbol, id: row.coinId, name: row.name, color: row.color, isActive: row.isActive };
+}
+
 export function CoinsAdminClient({ initialCoins }: CoinsAdminClientProps) {
-  const [coins, setCoins] = useState<CoinRow[]>(initialCoins as CoinRow[]);
+  const [coins, setCoins] = useState<CoinRow[]>(initialCoins.map(toCoinRow));
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingCoin, setEditingCoin] = useState<CoinRow | null>(null);
@@ -1232,7 +1264,7 @@ export function CoinsAdminClient({ initialCoins }: CoinsAdminClientProps) {
                     {coin.name}
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
-                    {coin.id}
+                    {coin.coinId}
                   </td>
                   <td className="whitespace-nowrap px-4 py-3">
                     <div className="flex items-center gap-2">
@@ -1354,7 +1386,7 @@ export function CoinsAdminClient({ initialCoins }: CoinsAdminClientProps) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">CoinCap ID</label>
-                <input name="coincapId" defaultValue={editingCoin.id} required placeholder="bitcoin" maxLength={50}
+                <input name="coincapId" defaultValue={editingCoin.coinId} required placeholder="bitcoin" maxLength={50}
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-800" />
               </div>
               <div>
