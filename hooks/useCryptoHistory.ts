@@ -39,6 +39,15 @@ async function fetchHistory(): Promise<Record<string, PricePoint[]>> {
     })
   );
 
+  // Check for failures
+  const failures = settled.filter(r => r.status === 'rejected');
+  if (failures.length > 0) {
+    const failedCoins = failures
+      .filter((r): r is PromiseRejectedResult => r.status === 'rejected')
+      .map(r => r.reason?.message || 'Unknown error');
+    console.warn(`Failed to fetch history for some coins: ${failedCoins.join(', ')}`);
+  }
+
   return results;
 }
 
