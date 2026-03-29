@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export interface PricePoint {
   time: number;
@@ -25,7 +25,7 @@ const COIN_SYMBOLS: Record<string, string> = {
 async function fetchHistory(): Promise<Record<string, PricePoint[]>> {
   const results: Record<string, PricePoint[]> = {};
 
-  await Promise.all(
+  const settled = await Promise.allSettled(
     COIN_IDS.map(async (id) => {
       const response = await fetch(
         `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=1`
@@ -47,7 +47,7 @@ export function useCryptoHistory(): UseCryptoHistoryReturn {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -58,7 +58,7 @@ export function useCryptoHistory(): UseCryptoHistoryReturn {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     load();
