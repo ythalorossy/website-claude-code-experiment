@@ -113,11 +113,6 @@ export function CryptoChart({ history, liveData, coins }: CryptoChartProps) {
         </LineChart>
       </ResponsiveContainer>
 
-      {/* Live Indicator */}
-      <div className="mt-2 flex items-center justify-end gap-2">
-        <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
-        <span className="text-xs text-gray-500">Live</span>
-      </div>
     </div>
   );
 }
