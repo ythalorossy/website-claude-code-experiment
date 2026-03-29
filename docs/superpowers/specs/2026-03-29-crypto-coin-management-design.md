@@ -2,13 +2,13 @@
 
 ## Overview
 
-Add a full CRUD admin interface for managing which cryptocurrency coins are supported on the platform. Currently coins are hardcoded in `lib/crypto.ts`. This feature moves coin configuration to the database and provides an admin UI to manage them.
+Add a full CRUD admin interface for managing which cryptocurrency coins are supported on the platform. Currently coins are hardcoded in `lib/crypto.ts` and duplicated in `hooks/useCryptoHistory.ts`. This feature moves coin configuration to the database and provides an admin UI to manage them.
 
 ## Goals
 
 - Admins can add, edit, remove, and toggle active status for coins from the admin UI
 - Coin configuration stored in PostgreSQL via Prisma
-- Existing real-time crypto display (public and admin pages) continues to work unchanged
+- Existing real-time crypto display (public and admin pages) updated to use DB-backed coin config
 - Coin data fetched from DB on page load; falls back to hardcoded seed data if DB is unavailable
 
 ## Design
@@ -29,22 +29,25 @@ model Coin {
   updatedAt   DateTime @updatedAt
 
   @@unique([symbol])
-  @@index([coincapId])
+  @@unique([coincapId])
+  @@index([isActive])
 }
 ```
 
 **Constraints:**
 - `symbol` must be unique (case-sensitive, e.g. "BTC" not "btc")
+- `coincapId` must be unique — multiple coins cannot share the same CoinCap ID
 - `coincapId` is indexed for fast lookups when connecting to CoinCap WebSocket
 - `isActive` defaults to `true` so newly added coins are immediately visible
 
 ### 2. API Routes
 
-All routes live under `app/api/admin/crypto/coins/` and require authentication and ADMIN role (via existing `withAuth` middleware pattern used by other admin APIs).
+All routes follow the existing pattern used by `app/api/posts/route.ts` — inline auth check using `getServerSession(authOptions)` with role verification. Routes are NOT under an `/api/admin/` prefix.
 
-#### `GET /api/admin/crypto/coins`
+#### `GET /api/crypto/coins`
 
 Returns all coins (active and inactive) ordered by `symbol`.
+No auth required (public data).
 
 **Response `200`:**
 ```json
@@ -64,9 +67,11 @@ Returns all coins (active and inactive) ordered by `symbol`.
 }
 ```
 
-#### `POST /api/admin/crypto/coins`
+#### `POST /api/crypto/coins`
 
-Create a new coin.
+Create a new coin. **Requires ADMIN role.**
+
+**Auth:** Inline check — `if (!session || session.user.role !== 'ADMIN') return 401`.
 
 **Request body:**
 ```json
@@ -91,11 +96,15 @@ Create a new coin.
 
 **Errors:**
 - `400` — validation failure with `{ error: "Validation failed", details: [...] }`
-- `409` — symbol already exists
+- `401` — not authenticated
+- `403` — not ADMIN
+- `409` — symbol or coincapId already exists
 
-#### `PATCH /api/admin/crypto/coins/[id]`
+#### `PATCH /api/crypto/coins/[id]`
 
-Update an existing coin. All fields optional.
+Update an existing coin. All fields optional. **Requires ADMIN role.**
+
+**Auth:** Inline check — `if (!session || session.user.role !== 'ADMIN') return 401`.
 
 **Request body (all optional):**
 ```json
@@ -115,11 +124,16 @@ Update an existing coin. All fields optional.
 
 **Errors:**
 - `400` — validation failure
+- `401` — not authenticated
+- `403` — not ADMIN
 - `404` — coin not found
+- `409` — symbol or coincapId already exists (if changed to one that conflicts)
 
-#### `DELETE /api/admin/crypto/coins/[id]`
+#### `DELETE /api/crypto/coins/[id]`
 
-Delete a coin by ID.
+Delete a coin by ID. **Requires ADMIN role.**
+
+**Auth:** Inline check — `if (!session || session.user.role !== 'ADMIN') return 401`.
 
 **Response `200`:**
 ```json
@@ -127,6 +141,8 @@ Delete a coin by ID.
 ```
 
 **Errors:**
+- `401` — not authenticated
+- `403` — not ADMIN
 - `404` — coin not found
 
 ### 3. Admin UI
@@ -218,21 +234,66 @@ export async function getActiveCoins(): Promise<CoinData[]>
 
 ### 5. Integration with Existing Code
 
-**`hooks/useCryptoWebSocket.ts`:**
-- No changes — receives coin config as prop from parent
-- Parent (page component) passes coins from `getActiveCoins()`
+#### `hooks/useCryptoWebSocket.ts` — Refactor to accept dynamic coin IDs
 
-**`hooks/useCryptoHistory.ts`:**
-- No changes — receives coin `id` values as prop
+**Current:** `const WS_URL = 'wss://ws.coincap.io/prices?assets=bitcoin,ethereum,solana,dogecoin'` — hardcoded.
 
-**`app/admin/crypto/page.tsx`:**
-- Update to call `getActiveCoins()` instead of importing `CRYPTO_COINS`
-- Pass fetched coins to `CryptoAdminClient`
+**Changes:**
+- Accept `coinIds: string[]` (array of coincapIds, e.g. `['bitcoin', 'ethereum']`) as a parameter
+- Construct the WebSocket URL dynamically: `wss://ws.coincap.io/prices?assets=${coinIds.join(',')}`
+- Accept `coins: CoinData[]` as a second parameter to initialize price state and map WebSocket responses
+- Change signature: `useCryptoWebSocket(coinIds: string[], coins: CoinData[]): UseCryptoWebSocketReturn`
+- Initial state built from the `coins` array instead of `CRYPTO_COINS`
+- `onmessage` maps over the passed `coins` array (not a hardcoded list) to find matching `id` (coincapId) → `symbol` mapping
 
-**`app/[locale]/crypto/page.tsx`:**
-- Same change — call `getActiveCoins()` and pass to `CryptoClient`
+#### `hooks/useCryptoHistory.ts` — Refactor to accept dynamic coin IDs
 
-**Sidebar navigation (`app/admin/layout.tsx`):**
+**Current:** Hardcoded `COIN_IDS` and `COIN_SYMBOLS` arrays.
+
+**Changes:**
+- Accept `coins: CoinData[]` as a parameter
+- Extract `coinIds` and build the symbol mapping dynamically from the passed `coins` array
+- Change signature: `useCryptoHistory(coins: CoinData[]): UseCryptoHistoryReturn`
+- Fetch history for each coin's `id` (coincapId) via CoinGecko API
+- Map results back to `symbol` using the passed `coins` array
+
+#### `app/admin/crypto/page.tsx` — Server component
+
+- Import `getActiveCoins()` from `lib/crypto.ts`
+- `export default async function` — call `const coins = await getActiveCoins()`
+- Pass `coins` to `CryptoAdminClient`: `<CryptoAdminClient coins={coins} />`
+
+#### `app/admin/crypto/CryptoAdminClient.tsx` — Refactor to accept coins as prop
+
+**Current:** Imports `CRYPTO_COINS` directly and manages `selectedCoins` locally.
+
+**Changes:**
+- Accept `coins: CoinData[]` as a prop
+- Remove `import { CRYPTO_COINS }` — no longer used
+- Replace all `CRYPTO_COINS` usage with the passed `coins` prop
+- `selectedCoins` state initialized from the `coins` prop's active symbols
+- Pass `coins.map(c => c.id)` and `coins` to `useCryptoWebSocket(coinIds, coins)`
+- Pass `coins` to `useCryptoHistory(coins)`
+
+#### `app/[locale]/crypto/page.tsx` — Server component
+
+- Import `getActiveCoins()` from `lib/crypto.ts`
+- `export default async function` — call `const coins = await getActiveCoins()`
+- Pass `coins` to `CryptoClient`: `<CryptoClient coins={coins} />`
+
+#### `app/[locale]/crypto/CryptoClient.tsx` — Refactor to accept coins as prop
+
+**Current:** Imports `CRYPTO_COINS` directly.
+
+**Changes:**
+- Accept `coins: CoinData[]` as a prop
+- Remove `import { CRYPTO_COINS }` — no longer used
+- Replace all `CRYPTO_COINS` usage with the passed `coins` prop
+- Pass `coins.map(c => c.id)` and `coins` to `useCryptoWebSocket(coinIds, coins)`
+- Pass `coins` to `useCryptoHistory(coins)`
+
+#### Sidebar navigation (`app/admin/layout.tsx`)
+
 - Add "Coins" link under Crypto section:
   - `/admin/crypto` → "Dashboard"
   - `/admin/crypto/coins` → "Manage Coins"
@@ -265,32 +326,62 @@ export async function getActiveCoins(): Promise<CoinData[]>
 | `prisma/schema.prisma` | Add `Coin` model |
 | `prisma/seed.ts` | Add `seedCoins()` |
 | `lib/crypto.ts` | Refactor to `getCoins()` / `getActiveCoins()`, keep fallback |
-| `app/api/admin/crypto/coins/route.ts` | New — GET and POST |
-| `app/api/admin/crypto/coins/[id]/route.ts` | New — PATCH and DELETE |
+| `app/api/crypto/coins/route.ts` | New — GET (public) and POST (admin) |
+| `app/api/crypto/coins/[id]/route.ts` | New — PATCH and DELETE (admin, inline auth) |
 | `app/admin/crypto/coins/page.tsx` | New — server component |
 | `app/admin/crypto/coins/CoinsAdminClient.tsx` | New — client component |
+| `hooks/useCryptoWebSocket.ts` | Refactor to accept `coinIds` and `coins` as params |
+| `hooks/useCryptoHistory.ts` | Refactor to accept `coins` as param |
 | `app/admin/crypto/page.tsx` | Update to use DB-backed coins |
+| `app/admin/crypto/CryptoAdminClient.tsx` | Refactor to accept `coins` as prop |
 | `app/[locale]/crypto/page.tsx` | Update to use DB-backed coins |
-| `app/admin/layout.tsx` | Add Coins nav link |
+| `app/[locale]/crypto/CryptoClient.tsx` | Refactor to accept `coins` as prop |
+| `app/admin/layout.tsx` | Add Coins nav link | |
 
 ### 9. Testing Checklist
 
 **API routes:**
-- [ ] GET returns all coins
-- [ ] POST creates coin with valid data
+- [ ] GET `/api/crypto/coins` returns all coins (public, no auth)
+- [ ] GET `/api/crypto/coins` returns empty array when DB is empty
+- [ ] POST creates coin with valid data → 201
 - [ ] POST returns 400 for missing/invalid fields
+- [ ] POST returns 401 when not authenticated
+- [ ] POST returns 403 when not ADMIN
 - [ ] POST returns 409 for duplicate symbol
-- [ ] PATCH updates single field
-- [ ] PATCH updates all fields
+- [ ] POST returns 409 for duplicate coincapId
+- [ ] PATCH with valid partial data updates only that field
+- [ ] PATCH with `isActive: false` toggles coin off
+- [ ] PATCH with `isActive: true` toggles coin on
+- [ ] PATCH returns 400 for invalid color format
 - [ ] PATCH returns 404 for non-existent ID
-- [ ] DELETE removes coin
+- [ ] PATCH returns 409 when changing symbol to an existing one
+- [ ] DELETE removes coin → 200
 - [ ] DELETE returns 404 for non-existent ID
+- [ ] DELETE returns 401 when not authenticated
+- [ ] DELETE returns 403 when not ADMIN
 
 **Admin UI:**
 - [ ] Coins table renders all DB coins
-- [ ] Add coin form creates and shows new coin
-- [ ] Edit updates the coin
-- [ ] Toggle active shows/hides on dashboard
-- [ ] Delete removes and updates list
-- [ ] Validation errors shown in UI
-- [ ] Admin sidebar shows Coins link
+- [ ] Add coin form creates and shows new coin in table
+- [ ] Edit opens modal with pre-filled data
+- [ ] Edit saves changes and reflects in table
+- [ ] Toggle active updates immediately and reflects on dashboard
+- [ ] Delete shows confirmation and removes coin from table
+- [ ] Validation errors (empty symbol, invalid color) shown inline
+- [ ] Toast notifications appear for success/error
+- [ ] Admin sidebar shows both Dashboard and Manage Coins links
+- [ ] Back link/navigation between Dashboard and Manage Coins works
+
+**End-to-end (public & admin crypto pages):**
+- [ ] Adding a new coin in admin makes it appear on `/admin/crypto` dashboard (after refresh/reconnect)
+- [ ] Deactivating a coin removes it from `/[locale]/crypto` public page
+- [ ] WebSocket reconnects with new coin list after adding a coin
+- [ ] History chart updates for newly added coin on next page load
+- [ ] Fallback to hardcoded coins works when DB is unreachable
+
+**Color validation edge cases:**
+- [ ] 3-digit hex accepted (`"#fff"`)
+- [ ] 6-digit hex accepted (`"#ffffff"`)
+- [ ] With `#` prefix accepted (`"#f7931a"`)
+- [ ] Without `#` prefix accepted (`"f7931a"`)
+- [ ] Invalid format rejected (`"red"`, `"#gggggg"`)
