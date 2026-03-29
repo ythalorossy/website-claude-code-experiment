@@ -51,6 +51,7 @@ export function Header() {
             <Link href={`/${locale}/writing`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('writing')}</Link>
             <Link href={`/${locale}/team`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('team')}</Link>
             <Link href={`/${locale}/contact`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('contact')}</Link>
+            <Link href={`/${locale}/crypto`} className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600">{t('crypto')}</Link>
             <ThemeToggle />
             <LanguageSelector />
             <Button size="sm" className="btn-glow" disabled>Loading...</Button>
@@ -113,6 +114,12 @@ export function Header() {
             className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
           >
             {t('contact')}
+          </Link>
+          <Link
+            href={`/${locale}/crypto`}
+            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+          >
+            {t('crypto')}
           </Link>
 
           {/* Theme Toggle */}

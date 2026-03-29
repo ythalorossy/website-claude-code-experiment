@@ -48,6 +48,12 @@ export default async function AdminLayout({
             Team
           </Link>
           <Link
+            href="/admin/crypto"
+            className="block rounded px-4 py-2 hover:bg-gray-800"
+          >
+            Crypto
+          </Link>
+          <Link
             href="/"
             className="block rounded px-4 py-2 hover:bg-gray-800 mt-4"
           >
