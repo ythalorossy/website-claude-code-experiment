@@ -6,7 +6,6 @@ export interface CryptoPrice {
   symbol: string;
   name: string;
   price: number;
-  change24h: number;
   priceHistory: { time: number; price: number }[];
 }
 
@@ -33,7 +32,7 @@ export function useCryptoWebSocket(): UseCryptoWebSocketReturn {
   const [prices, setPrices] = useState<Record<string, CryptoPrice>>(() => {
     const initial: Record<string, CryptoPrice> = {};
     COINS.forEach(({ symbol, name }) => {
-      initial[symbol] = { symbol, name, price: 0, change24h: 0, priceHistory: [] };
+      initial[symbol] = { symbol, name, price: 0, priceHistory: [] };
     });
     return initial;
   });
@@ -92,6 +91,8 @@ export function useCryptoWebSocket(): UseCryptoWebSocketReturn {
 
       ws.onerror = () => {
         setError(new Error('WebSocket connection error'));
+        // Force close to trigger onclose reconnect
+        ws.close();
       };
 
       ws.onclose = () => {
