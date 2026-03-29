@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { CRYPTO_COINS } from '@/lib/crypto';
 
 export interface CryptoPrice {
   symbol: string;
@@ -17,13 +18,6 @@ export interface UseCryptoWebSocketReturn {
   reconnect: () => void;
 }
 
-const COINS = [
-  { symbol: 'BTC', id: 'bitcoin', name: 'Bitcoin' },
-  { symbol: 'ETH', id: 'ethereum', name: 'Ethereum' },
-  { symbol: 'SOL', id: 'solana', name: 'Solana' },
-  { symbol: 'DOGE', id: 'dogecoin', name: 'Dogecoin' },
-];
-
 const WS_URL = 'wss://ws.coincap.io/prices?assets=bitcoin,ethereum,solana,dogecoin';
 const MAX_HISTORY_POINTS = 100;
 const RECONNECT_DELAYS = [1000, 2000, 4000, 8000, 16000, 30000];
@@ -31,7 +25,7 @@ const RECONNECT_DELAYS = [1000, 2000, 4000, 8000, 16000, 30000];
 export function useCryptoWebSocket(): UseCryptoWebSocketReturn {
   const [prices, setPrices] = useState<Record<string, CryptoPrice>>(() => {
     const initial: Record<string, CryptoPrice> = {};
-    COINS.forEach(({ symbol, name }) => {
+    CRYPTO_COINS.forEach(({ symbol, name }) => {
       initial[symbol] = { symbol, name, price: 0, priceHistory: [] };
     });
     return initial;
@@ -71,7 +65,7 @@ export function useCryptoWebSocket(): UseCryptoWebSocketReturn {
 
         setPrices((prev) => {
           const next = { ...prev };
-          COINS.forEach(({ symbol, id }) => {
+          CRYPTO_COINS.forEach(({ symbol, id }) => {
             const newPrice = parseFloat(data[id]);
             if (!isNaN(newPrice)) {
               const current = next[symbol];

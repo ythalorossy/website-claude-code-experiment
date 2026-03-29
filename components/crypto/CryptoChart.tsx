@@ -23,7 +23,7 @@ interface CoinConfig {
 
 interface CryptoChartProps {
   history: Record<string, PricePoint[]>;
-  liveData: Record<string, { priceHistory: PricePoint[] }>;
+  liveData: Record<string, { priceHistory: PricePoint[] } | undefined>;
   coins: CoinConfig[];
 }
 

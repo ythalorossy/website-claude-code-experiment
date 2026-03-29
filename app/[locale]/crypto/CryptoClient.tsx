@@ -4,17 +4,13 @@ import { useCryptoWebSocket } from '@/hooks/useCryptoWebSocket';
 import { useCryptoHistory } from '@/hooks/useCryptoHistory';
 import { CoinPriceCard } from '@/components/crypto/CoinPriceCard';
 import { CryptoChart } from '@/components/crypto/CryptoChart';
-
-const COINS = [
-  { symbol: 'BTC', id: 'bitcoin', name: 'Bitcoin', color: '#f7931a' },
-  { symbol: 'ETH', id: 'ethereum', name: 'Ethereum', color: '#627eea' },
-  { symbol: 'SOL', id: 'solana', name: 'Solana', color: '#14f195' },
-  { symbol: 'DOGE', id: 'dogecoin', name: 'Dogecoin', color: '#e84142' },
-];
+import { CRYPTO_COINS } from '@/lib/crypto';
 
 export function CryptoClient() {
-  const { prices, isConnected } = useCryptoWebSocket();
-  const { history, isLoading } = useCryptoHistory();
+  const { prices, isConnected, error: pricesError } = useCryptoWebSocket();
+  const { history, isLoading, error: historyError } = useCryptoHistory();
+
+  const error = pricesError || historyError;
 
   return (
     <div className="container mx-auto py-12">
@@ -34,9 +30,16 @@ export function CryptoClient() {
           </div>
         </header>
 
+        {/* Error Display */}
+        {error && (
+          <div className="mb-4 rounded-lg bg-red-100 p-4 text-red-700">
+            {error.message || 'Connection error'}
+          </div>
+        )}
+
         {/* Price Cards */}
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {COINS.map(({ symbol, name, color }) => (
+          {CRYPTO_COINS.map(({ symbol, name, color }) => (
             <CoinPriceCard
               key={symbol}
               symbol={symbol}
@@ -52,7 +55,7 @@ export function CryptoClient() {
           <CryptoChart
             history={history}
             liveData={prices}
-            coins={COINS.map(({ symbol, color }) => ({ symbol, color }))}
+            coins={CRYPTO_COINS.map(({ symbol, color }) => ({ symbol, color }))}
           />
         )}
       </div>
