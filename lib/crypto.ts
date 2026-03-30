@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db';
+import type { Coin as PrismaCoin } from '@prisma/client';
 
 export const CRYPTO_COINS_FALLBACK = [
   { symbol: 'BTC', id: 'bitcoin',   name: 'Bitcoin',   color: '#f7931a' },
@@ -21,7 +22,7 @@ export async function getCoins(): Promise<CoinData[]> {
     const coins = await prisma.coin.findMany({
       orderBy: { symbol: 'asc' },
     });
-    return coins.map((c) => ({
+    return (coins as PrismaCoin[]).map((c: PrismaCoin) => ({
       symbol: c.symbol,
       id: c.coincapId,
       name: c.name,
@@ -41,7 +42,7 @@ export async function getActiveCoins(): Promise<CoinData[]> {
       where: { isActive: true },
       orderBy: { symbol: 'asc' },
     });
-    return coins.map((c) => ({
+    return (coins as PrismaCoin[]).map((c: PrismaCoin) => ({
       symbol: c.symbol,
       id: c.coincapId,
       name: c.name,
