@@ -19,14 +19,11 @@ async function fetchHistory(coins: CoinData[]): Promise<Record<string, PricePoin
   const settled = await Promise.allSettled(
     coins.map(async (coin) => {
       const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=usd&days=1`
+        `/api/crypto/history?ids=${coin.id}&days=1`
       );
       if (!response.ok) throw new Error(`Failed to fetch ${coin.id} history`);
       const data = await response.json();
-      results[coin.symbol] = data.prices.map(([time, price]: [number, number]) => ({
-        time,
-        price,
-      }));
+      results[coin.symbol] = data[coin.id] || [];
     })
   );
 

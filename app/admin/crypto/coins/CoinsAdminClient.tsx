@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { CoinData } from '@/lib/crypto';
 
@@ -10,7 +10,8 @@ interface CoinsAdminClientProps {
 
 /**
  * Raw API response shape — id is db cuid (used for API calls),
- * coinId is CoinCap ID (displayed in "CoinCap ID" column).
+ * coinId is the coin identifier (displayed in "Coin ID" column).
+ * These map to Coinbase currency codes via the API.
  */
 interface CoinRow {
   id: string;
@@ -44,7 +45,8 @@ function toCoinRow(c: CoinData): CoinRow {
 }
 
 export function CoinsAdminClient({ initialCoins }: CoinsAdminClientProps) {
-  const [coins, setCoins] = useState<CoinRow[]>(initialCoins.map(toCoinRow));
+  // Initialize from initialCoins but will be replaced by API data on mount
+  const [coins, setCoins] = useState<CoinRow[]>(() => initialCoins.map(toCoinRow));
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingCoin, setEditingCoin] = useState<CoinRow | null>(null);
@@ -69,6 +71,11 @@ export function CoinsAdminClient({ initialCoins }: CoinsAdminClientProps) {
       )
     );
   }, []);
+
+  // Fetch real database IDs on mount
+  useEffect(() => {
+    refetchCoins();
+  }, [refetchCoins]);
 
   async function handleAddCoin(formData: FormData) {
     setIsSubmitting(true);
@@ -130,17 +137,31 @@ export function CoinsAdminClient({ initialCoins }: CoinsAdminClientProps) {
   }
 
   async function handleToggleActive(coin: CoinRow) {
+    const newIsActive = !coin.isActive;
+
+    // Optimistic update - immediately update UI
+    setCoins((prev) =>
+      prev.map((c) =>
+        c.id === coin.id ? { ...c, isActive: newIsActive } : c
+      )
+    );
+
     const res = await fetch(`/api/crypto/coins/${coin.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ isActive: !coin.isActive }),
+      body: JSON.stringify({ isActive: newIsActive }),
     });
     if (!res.ok) {
+      // Revert on failure
+      setCoins((prev) =>
+        prev.map((c) =>
+          c.id === coin.id ? { ...c, isActive: coin.isActive } : c
+        )
+      );
       addToast('error', 'Failed to toggle coin active status');
       return;
     }
-    await refetchCoins();
-    addToast('success', `${coin.symbol} ${!coin.isActive ? 'activated' : 'deactivated'}`);
+    addToast('success', `${coin.symbol} ${newIsActive ? 'activated' : 'deactivated'}`);
   }
 
   async function handleDeleteCoin() {
@@ -192,7 +213,7 @@ export function CoinsAdminClient({ initialCoins }: CoinsAdminClientProps) {
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Symbol</th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Name</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">CoinCap ID</th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Coin ID</th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Color</th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Active</th>
                 <th className="px-4 py-3 text-right text-xs font-medium uppercase text-gray-500">Actions</th>
@@ -281,8 +302,8 @@ export function CoinsAdminClient({ initialCoins }: CoinsAdminClientProps) {
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-800" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">CoinCap ID</label>
-                <input name="coincapId" required placeholder="bitcoin" maxLength={50}
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Coin ID (Coinbase)</label>
+                <input name="coincapId" required placeholder="bitcoin, shiba-inu, uniswap" maxLength={50}
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-800" />
               </div>
               <div>
@@ -329,7 +350,7 @@ export function CoinsAdminClient({ initialCoins }: CoinsAdminClientProps) {
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-800" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">CoinCap ID</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Coin ID (Coinbase)</label>
                 <input name="coincapId" defaultValue={editingCoin.coinId} required placeholder="bitcoin" maxLength={50}
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-800" />
               </div>
