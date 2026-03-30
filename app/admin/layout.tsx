@@ -47,12 +47,21 @@ export default async function AdminLayout({
           >
             Team
           </Link>
-          <Link
-            href="/admin/crypto"
-            className="block rounded px-4 py-2 hover:bg-gray-800"
-          >
-            Crypto
-          </Link>
+          <div className="mt-2">
+            <span className="block px-4 py-2 text-xs font-semibold uppercase text-gray-400">Crypto</span>
+            <Link
+              href="/admin/crypto"
+              className="block rounded px-4 py-2 pl-8 hover:bg-gray-800"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/admin/crypto/coins"
+              className="block rounded px-4 py-2 pl-8 hover:bg-gray-800"
+            >
+              Manage Coins
+            </Link>
+          </div>
           <Link
             href="/"
             className="block rounded px-4 py-2 hover:bg-gray-800 mt-4"
