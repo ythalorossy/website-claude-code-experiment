@@ -6,12 +6,19 @@ import { useCryptoHistory } from '@/hooks/useCryptoHistory';
 import { CoinPriceCard } from '@/components/crypto/CoinPriceCard';
 import { CryptoChart } from '@/components/crypto/CryptoChart';
 import { Button } from '@/components/ui/Button';
-import { CRYPTO_COINS_FALLBACK } from '@/lib/crypto';
+import { CoinData } from '@/lib/crypto';
 
-export function CryptoAdminClient() {
-  const [selectedCoins, setSelectedCoins] = useState<string[]>(['BTC', 'ETH', 'SOL', 'DOGE']);
-  const { prices, isConnected, isReconnecting, error, reconnect } = useCryptoWebSocket();
-  const { history, isLoading, refresh } = useCryptoHistory();
+interface CryptoAdminClientProps {
+  coins: CoinData[];
+}
+
+export function CryptoAdminClient({ coins }: CryptoAdminClientProps) {
+  const [selectedCoins, setSelectedCoins] = useState<string[]>(
+    coins.filter((c) => c.isActive !== false).map((c) => c.symbol)
+  );
+  const coinIds = coins.map((c) => c.id);
+  const { prices, isConnected, isReconnecting, error, reconnect } = useCryptoWebSocket(coinIds, coins);
+  const { history, isLoading, refresh } = useCryptoHistory(coins);
 
   const toggleCoin = (symbol: string) => {
     setSelectedCoins((prev) =>
@@ -19,7 +26,7 @@ export function CryptoAdminClient() {
     );
   };
 
-  const selectedCoinsConfig = CRYPTO_COINS_FALLBACK.filter(({ symbol }) => selectedCoins.includes(symbol));
+  const selectedCoinsConfig = coins.filter(({ symbol }) => selectedCoins.includes(symbol));
 
   return (
     <div className="container mx-auto py-8">
@@ -51,7 +58,7 @@ export function CryptoAdminClient() {
           </Button>
 
           <div className="ml-auto flex gap-2">
-            {CRYPTO_COINS_FALLBACK.map(({ symbol }) => (
+            {coins.map(({ symbol }) => (
               <label key={symbol} className="flex items-center gap-1 text-sm">
                 <input
                   type="checkbox"
