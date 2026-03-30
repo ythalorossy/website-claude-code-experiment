@@ -4,11 +4,16 @@ import { useCryptoWebSocket } from '@/hooks/useCryptoWebSocket';
 import { useCryptoHistory } from '@/hooks/useCryptoHistory';
 import { CoinPriceCard } from '@/components/crypto/CoinPriceCard';
 import { CryptoChart } from '@/components/crypto/CryptoChart';
-import { CRYPTO_COINS_FALLBACK } from '@/lib/crypto';
+import { CoinData } from '@/lib/crypto';
 
-export function CryptoClient() {
-  const { prices, isConnected, error: pricesError } = useCryptoWebSocket();
-  const { history, isLoading, error: historyError } = useCryptoHistory();
+interface CryptoClientProps {
+  coins: CoinData[];
+}
+
+export function CryptoClient({ coins }: CryptoClientProps) {
+  const coinIds = coins.map((c) => c.id);
+  const { prices, isConnected, error: pricesError } = useCryptoWebSocket(coinIds, coins);
+  const { history, isLoading, error: historyError } = useCryptoHistory(coins);
 
   const error = pricesError || historyError;
 
@@ -39,7 +44,7 @@ export function CryptoClient() {
 
         {/* Price Cards */}
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {CRYPTO_COINS_FALLBACK.map(({ symbol, name, color }) => (
+          {coins.map(({ symbol, name, color }) => (
             <CoinPriceCard
               key={symbol}
               symbol={symbol}
@@ -55,7 +60,7 @@ export function CryptoClient() {
           <CryptoChart
             history={history}
             liveData={prices}
-            coins={CRYPTO_COINS_FALLBACK.map(({ symbol, color }) => ({ symbol, color }))}
+            coins={coins.map(({ symbol, color }) => ({ symbol, color }))}
           />
         )}
       </div>
