@@ -43,11 +43,6 @@ function toCoinRow(c: CoinData): CoinRow {
   };
 }
 
-/** Map CoinRow to CoinData for passing to hooks */
-function toCoinData(row: CoinRow): CoinData {
-  return { symbol: row.symbol, id: row.coinId, name: row.name, color: row.color, isActive: row.isActive };
-}
-
 export function CoinsAdminClient({ initialCoins }: CoinsAdminClientProps) {
   const [coins, setCoins] = useState<CoinRow[]>(initialCoins.map(toCoinRow));
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -67,7 +62,12 @@ export function CoinsAdminClient({ initialCoins }: CoinsAdminClientProps) {
   const refetchCoins = useCallback(async () => {
     const res = await fetch('/api/crypto/coins');
     const data = await res.json();
-    setCoins(data.coins);
+    // API returns Prisma Coin[] with coincapId field; CoinRow expects coinId.
+    setCoins(
+      (data.coins as { id: string; symbol: string; name: string; coincapId: string; color: string; isActive: boolean; createdAt: string; updatedAt: string }[]).map(
+        (c) => ({ id: c.id, symbol: c.symbol, name: c.name, coinId: c.coincapId, color: c.color, isActive: c.isActive, createdAt: c.createdAt, updatedAt: c.updatedAt })
+      )
+    );
   }, []);
 
   async function handleAddCoin(formData: FormData) {
