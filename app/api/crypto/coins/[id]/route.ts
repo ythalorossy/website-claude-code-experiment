@@ -15,17 +15,25 @@ function validatePatchBody(body: Record<string, unknown>) {
   const coincapId = body.coincapId as string | undefined;
   const color = body.color as string | undefined;
 
-  if (symbol !== undefined && !SYMBOL_REGEX.test(symbol)) {
-    errors.push('symbol must be 2-10 uppercase letters');
+  if (symbol !== undefined) {
+    if (typeof symbol !== 'string' || !SYMBOL_REGEX.test(symbol)) {
+      errors.push('symbol must be 2-10 uppercase letters');
+    }
   }
-  if (name !== undefined && (name.length < 2 || name.length > 50)) {
-    errors.push('name must be 2-50 characters');
+  if (name !== undefined) {
+    if (typeof name !== 'string' || name.length < 2 || name.length > 50) {
+      errors.push('name must be 2-50 characters');
+    }
   }
-  if (coincapId !== undefined && !COINCAP_ID_REGEX.test(coincapId)) {
-    errors.push('coincapId must be 2-50 lowercase letters, numbers, or dashes');
+  if (coincapId !== undefined) {
+    if (typeof coincapId !== 'string' || !COINCAP_ID_REGEX.test(coincapId)) {
+      errors.push('coincapId must be 2-50 lowercase letters, numbers, or dashes');
+    }
   }
-  if (color !== undefined && !COLOR_REGEX.test(color)) {
-    errors.push('color must be a valid hex color (3 or 6 digits, optional #)');
+  if (color !== undefined) {
+    if (typeof color !== 'string' || !COLOR_REGEX.test(color)) {
+      errors.push('color must be a valid hex color (3 or 6 digits, optional #)');
+    }
   }
 
   return errors;
@@ -75,12 +83,23 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (color !== undefined) updateData.color = color;
   if (isActive !== undefined) updateData.isActive = isActive;
 
-  const coin = await prisma.coin.update({
-    where: { id },
-    data: updateData,
-  });
-
-  return NextResponse.json({ coin });
+  try {
+    const coin = await prisma.coin.update({
+      where: { id },
+      data: updateData,
+    });
+    return NextResponse.json({ coin });
+  } catch (err) {
+    if (
+      typeof err === 'object' &&
+      err !== null &&
+      'code' in err &&
+      (err as { code?: string }).code === 'P2002'
+    ) {
+      return NextResponse.json({ error: 'A coin with this symbol or coincapId already exists' }, { status: 409 });
+    }
+    throw err;
+  }
 }
 
 export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {

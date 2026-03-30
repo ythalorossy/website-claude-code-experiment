@@ -15,16 +15,16 @@ function validateCoinBody(body: Record<string, unknown>) {
   const coincapId = body.coincapId as string | undefined;
   const color = body.color as string | undefined;
 
-  if (!symbol || !SYMBOL_REGEX.test(symbol)) {
+  if (!symbol || typeof symbol !== 'string' || !SYMBOL_REGEX.test(symbol)) {
     errors.push('symbol must be 2-10 uppercase letters');
   }
-  if (!name || name.length < 2 || name.length > 50) {
+  if (!name || typeof name !== 'string' || name.length < 2 || name.length > 50) {
     errors.push('name must be 2-50 characters');
   }
-  if (!coincapId || !COINCAP_ID_REGEX.test(coincapId)) {
+  if (!coincapId || typeof coincapId !== 'string' || !COINCAP_ID_REGEX.test(coincapId)) {
     errors.push('coincapId must be 2-50 lowercase letters, numbers, or dashes');
   }
-  if (!color || !COLOR_REGEX.test(color)) {
+  if (!color || typeof color !== 'string' || !COLOR_REGEX.test(color)) {
     errors.push('color must be a valid hex color (3 or 6 digits, optional #)');
   }
 
@@ -64,9 +64,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: `A coin with this ${conflict} already exists` }, { status: 409 });
   }
 
-  const coin = await prisma.coin.create({
-    data: { symbol, name, coincapId, color },
-  });
-
-  return NextResponse.json({ coin }, { status: 201 });
+  try {
+    const coin = await prisma.coin.create({
+      data: { symbol, name, coincapId, color },
+    });
+    return NextResponse.json({ coin }, { status: 201 });
+  } catch (err) {
+    if (
+      typeof err === 'object' &&
+      err !== null &&
+      'code' in err &&
+      (err as { code?: string }).code === 'P2002'
+    ) {
+      return NextResponse.json({ error: 'A coin with this symbol or coincapId already exists' }, { status: 409 });
+    }
+    throw err;
+  }
 }
