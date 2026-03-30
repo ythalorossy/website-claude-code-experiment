@@ -1,6 +1,6 @@
 'use client';
 
-import { useCryptoWebSocket } from '@/hooks/useCryptoWebSocket';
+import { useCryptoPolling } from '@/hooks/useCryptoPolling';
 import { useCryptoHistory } from '@/hooks/useCryptoHistory';
 import { CoinPriceCard } from '@/components/crypto/CoinPriceCard';
 import { CryptoChart } from '@/components/crypto/CryptoChart';
@@ -12,7 +12,7 @@ interface CryptoClientProps {
 
 export function CryptoClient({ coins }: CryptoClientProps) {
   const coinIds = coins.map((c) => c.id);
-  const { prices, isConnected, error: pricesError } = useCryptoWebSocket(coinIds, coins);
+  const { prices, isConnected, error: pricesError } = useCryptoPolling(coinIds, coins);
   const { history, isLoading, error: historyError } = useCryptoHistory(coins);
 
   const error = pricesError || historyError;
@@ -23,7 +23,7 @@ export function CryptoClient({ coins }: CryptoClientProps) {
         <header className="mb-8 text-center">
           <h1 className="text-4xl font-bold">Live Crypto Prices</h1>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
-            Real-time cryptocurrency prices powered by WebSocket
+            Real-time cryptocurrency prices powered by polling
           </p>
           <div className="mt-2 flex items-center justify-center gap-2">
             <div

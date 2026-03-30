@@ -11,7 +11,7 @@ export interface CryptoPrice {
   priceHistory: { time: number; price: number }[];
 }
 
-export interface UseCryptoPricesReturn {
+export interface UseCryptoPollingReturn {
   prices: Record<string, CryptoPrice>;
   isConnected: boolean;
   isReconnecting: boolean;
@@ -19,13 +19,13 @@ export interface UseCryptoPricesReturn {
   reconnect: () => void;
 }
 
-const POLL_INTERVAL = 30000; // 30 seconds
 const MAX_HISTORY_POINTS = 100;
+const POLL_INTERVAL = 30000; // 30 seconds
 
-export function useCryptoPrices(
+export function useCryptoPolling(
   coinIds: string[],
   coins: CoinData[]
-): UseCryptoPricesReturn {
+): UseCryptoPollingReturn {
   const [prices, setPrices] = useState<Record<string, CryptoPrice>>(() => {
     const initial: Record<string, CryptoPrice> = {};
     coins.forEach(({ symbol, name }) => {
@@ -39,20 +39,21 @@ export function useCryptoPrices(
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const coinsRef = useRef(coins);
-  coinsRef.current = coins;
   const lastPriceRef = useRef<Record<string, number>>({});
 
+  // Use ref for coinIds to avoid triggering re-fetch on change
+  const coinIdsRef = useRef(coinIds);
+  coinIdsRef.current = coinIds;
+
   const fetchPrices = useCallback(async () => {
-    if (coinIds.length === 0) return;
+    const ids = coinIdsRef.current;
+    if (ids.length === 0) return;
 
     try {
-      const ids = coinIds.join(',');
-      const response = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`
-      );
+      const response = await fetch(`/api/crypto/prices?ids=${ids.join(',')}`);
 
       if (!response.ok) {
-        throw new Error(`CoinGecko API error: ${response.status}`);
+        throw new Error(`Prices API error: ${response.status}`);
       }
 
       const data = await response.json();
@@ -60,24 +61,24 @@ export function useCryptoPrices(
 
       setPrices((prev) => {
         const next = { ...prev };
-        const currentCoins = coinsRef.current;
 
-        currentCoins.forEach(({ symbol, id }) => {
+        ids.forEach((id) => {
+          const coin = coinsRef.current.find((c) => c.id === id);
+          if (!coin) return;
+
           const coinData = data[id];
           if (!coinData) return;
 
           const newPrice = coinData.usd ?? 0;
-          const change24h = coinData.usd_24h_change;
 
           // Only add to history if price actually changed
-          const lastPrice = lastPriceRef.current[symbol];
+          const lastPrice = lastPriceRef.current[coin.symbol];
           if (lastPrice !== newPrice) {
-            lastPriceRef.current[symbol] = newPrice;
-            const current = next[symbol];
-            next[symbol] = {
+            lastPriceRef.current[coin.symbol] = newPrice;
+            const current = next[coin.symbol];
+            next[coin.symbol] = {
               ...current,
               price: newPrice,
-              change24h: change24h ?? current.change24h,
               priceHistory: [
                 ...current.priceHistory.slice(-(MAX_HISTORY_POINTS - 1)),
                 { time: now, price: newPrice },
@@ -97,28 +98,27 @@ export function useCryptoPrices(
       setIsConnected(false);
       setIsReconnecting(true);
     }
-  }, [coinIds]);
+  }, []);
 
   const reconnect = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
     fetchPrices();
-    intervalRef.current = setInterval(fetchPrices, POLL_INTERVAL);
   }, [fetchPrices]);
 
   useEffect(() => {
+    // Initial fetch
     fetchPrices();
+
+    // Set up interval
     intervalRef.current = setInterval(fetchPrices, POLL_INTERVAL);
 
+    // Cleanup
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
     };
-  }, [fetchPrices]);
+  }, []); // Empty deps - fetchPrices and interval are stable
 
   return { prices, isConnected, isReconnecting, error, reconnect };
 }

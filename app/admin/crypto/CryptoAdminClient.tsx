@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useCryptoWebSocket } from '@/hooks/useCryptoWebSocket';
+import { useCryptoPolling } from '@/hooks/useCryptoPolling';
 import { useCryptoHistory } from '@/hooks/useCryptoHistory';
 import { CoinPriceCard } from '@/components/crypto/CoinPriceCard';
 import { CryptoChart } from '@/components/crypto/CryptoChart';
@@ -17,7 +17,7 @@ export function CryptoAdminClient({ coins }: CryptoAdminClientProps) {
     coins.filter((c) => c.isActive !== false).map((c) => c.symbol)
   );
   const coinIds = coins.map((c) => c.id);
-  const { prices, isConnected, isReconnecting, error, reconnect } = useCryptoWebSocket(coinIds, coins);
+  const { prices, isConnected, isReconnecting, error, reconnect } = useCryptoPolling(coinIds, coins);
   const { history, isLoading, refresh } = useCryptoHistory(coins);
 
   const toggleCoin = (symbol: string) => {
