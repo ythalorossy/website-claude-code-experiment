@@ -6,7 +6,7 @@ import { useCryptoHistory } from '@/hooks/useCryptoHistory';
 import { CoinPriceCard } from '@/components/crypto/CoinPriceCard';
 import { CryptoChart } from '@/components/crypto/CryptoChart';
 import { Button } from '@/components/ui/Button';
-import { CRYPTO_COINS } from '@/lib/crypto';
+import { CRYPTO_COINS_FALLBACK } from '@/lib/crypto';
 
 export function CryptoAdminClient() {
   const [selectedCoins, setSelectedCoins] = useState<string[]>(['BTC', 'ETH', 'SOL', 'DOGE']);
@@ -19,7 +19,7 @@ export function CryptoAdminClient() {
     );
   };
 
-  const selectedCoinsConfig = CRYPTO_COINS.filter(({ symbol }) => selectedCoins.includes(symbol));
+  const selectedCoinsConfig = CRYPTO_COINS_FALLBACK.filter(({ symbol }) => selectedCoins.includes(symbol));
 
   return (
     <div className="container mx-auto py-8">
@@ -51,7 +51,7 @@ export function CryptoAdminClient() {
           </Button>
 
           <div className="ml-auto flex gap-2">
-            {CRYPTO_COINS.map(({ symbol }) => (
+            {CRYPTO_COINS_FALLBACK.map(({ symbol }) => (
               <label key={symbol} className="flex items-center gap-1 text-sm">
                 <input
                   type="checkbox"

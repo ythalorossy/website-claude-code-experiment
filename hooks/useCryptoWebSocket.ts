@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { CRYPTO_COINS } from '@/lib/crypto';
+import { CoinData } from '@/lib/crypto';
 
 export interface CryptoPrice {
   symbol: string;
@@ -18,14 +18,16 @@ export interface UseCryptoWebSocketReturn {
   reconnect: () => void;
 }
 
-const WS_URL = 'wss://ws.coincap.io/prices?assets=bitcoin,ethereum,solana,dogecoin';
 const MAX_HISTORY_POINTS = 100;
 const RECONNECT_DELAYS = [1000, 2000, 4000, 8000, 16000, 30000];
 
-export function useCryptoWebSocket(): UseCryptoWebSocketReturn {
+export function useCryptoWebSocket(
+  coinIds: string[],
+  coins: CoinData[]
+): UseCryptoWebSocketReturn {
   const [prices, setPrices] = useState<Record<string, CryptoPrice>>(() => {
     const initial: Record<string, CryptoPrice> = {};
-    CRYPTO_COINS.forEach(({ symbol, name }) => {
+    coins.forEach(({ symbol, name }) => {
       initial[symbol] = { symbol, name, price: 0, priceHistory: [] };
     });
     return initial;
@@ -39,12 +41,17 @@ export function useCryptoWebSocket(): UseCryptoWebSocketReturn {
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastUpdateRef = useRef<number>(0);
   const isManualCloseRef = useRef(false);
+  const coinsRef = useRef(coins);
+  coinsRef.current = coins;
 
   const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
+    if (coinIds.length === 0) return;
+
+    const wsUrl = `wss://ws.coincap.io/prices?assets=${coinIds.join(',')}`;
 
     try {
-      const ws = new WebSocket(WS_URL);
+      const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
       isManualCloseRef.current = false;
 
@@ -56,16 +63,16 @@ export function useCryptoWebSocket(): UseCryptoWebSocketReturn {
       };
 
       ws.onmessage = (event) => {
-        // Debounce: only update state max once per second
         const now = Date.now();
         if (now - lastUpdateRef.current < 1000) return;
         lastUpdateRef.current = now;
 
         const data = JSON.parse(event.data);
+        const currentCoins = coinsRef.current;
 
         setPrices((prev) => {
           const next = { ...prev };
-          CRYPTO_COINS.forEach(({ symbol, id }) => {
+          currentCoins.forEach(({ symbol, id }) => {
             const newPrice = parseFloat(data[id]);
             if (!isNaN(newPrice)) {
               const current = next[symbol];
@@ -85,7 +92,6 @@ export function useCryptoWebSocket(): UseCryptoWebSocketReturn {
 
       ws.onerror = () => {
         setError(new Error('WebSocket connection error'));
-        // Force close to trigger onclose reconnect
         ws.close();
       };
 
@@ -93,10 +99,8 @@ export function useCryptoWebSocket(): UseCryptoWebSocketReturn {
         setIsConnected(false);
         wsRef.current = null;
 
-        // Skip auto-reconnect if manually closed
         if (isManualCloseRef.current) return;
 
-        // Exponential backoff reconnect
         const delay = RECONNECT_DELAYS[Math.min(reconnectAttemptRef.current, RECONNECT_DELAYS.length - 1)];
         reconnectAttemptRef.current += 1;
         setIsReconnecting(true);
@@ -108,7 +112,7 @@ export function useCryptoWebSocket(): UseCryptoWebSocketReturn {
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to connect'));
     }
-  }, []);
+  }, [coinIds]);
 
   const disconnect = useCallback(() => {
     if (reconnectTimeoutRef.current) {

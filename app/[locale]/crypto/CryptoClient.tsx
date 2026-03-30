@@ -4,7 +4,7 @@ import { useCryptoWebSocket } from '@/hooks/useCryptoWebSocket';
 import { useCryptoHistory } from '@/hooks/useCryptoHistory';
 import { CoinPriceCard } from '@/components/crypto/CoinPriceCard';
 import { CryptoChart } from '@/components/crypto/CryptoChart';
-import { CRYPTO_COINS } from '@/lib/crypto';
+import { CRYPTO_COINS_FALLBACK } from '@/lib/crypto';
 
 export function CryptoClient() {
   const { prices, isConnected, error: pricesError } = useCryptoWebSocket();
@@ -39,7 +39,7 @@ export function CryptoClient() {
 
         {/* Price Cards */}
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {CRYPTO_COINS.map(({ symbol, name, color }) => (
+          {CRYPTO_COINS_FALLBACK.map(({ symbol, name, color }) => (
             <CoinPriceCard
               key={symbol}
               symbol={symbol}
@@ -55,7 +55,7 @@ export function CryptoClient() {
           <CryptoChart
             history={history}
             liveData={prices}
-            coins={CRYPTO_COINS.map(({ symbol, color }) => ({ symbol, color }))}
+            coins={CRYPTO_COINS_FALLBACK.map(({ symbol, color }) => ({ symbol, color }))}
           />
         )}
       </div>
