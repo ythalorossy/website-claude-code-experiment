@@ -92,8 +92,8 @@ export function CryptoChart({ history, liveData, coins }: CryptoChartProps) {
           />
           <Tooltip
             contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px' }}
-            labelFormatter={formatTime}
-            formatter={(value: number) => [formatPrice(value), '']}
+            labelFormatter={(label) => formatTime(label as number)}
+            formatter={(value) => [formatPrice(value as number), '']}
           />
           <Legend
             wrapperStyle={{ fontSize: '12px' }}
