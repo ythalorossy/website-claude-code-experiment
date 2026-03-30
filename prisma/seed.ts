@@ -2,6 +2,24 @@ import { PrismaClient, Role, PostStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+async function seedCoins() {
+  const coins = [
+    { symbol: 'BTC', name: 'Bitcoin',   coincapId: 'bitcoin',  color: '#f7931a' },
+    { symbol: 'ETH', name: 'Ethereum',  coincapId: 'ethereum', color: '#627eea' },
+    { symbol: 'SOL', name: 'Solana',    coincapId: 'solana',   color: '#14f195' },
+    { symbol: 'DOGE', name: 'Dogecoin', coincapId: 'dogecoin', color: '#e84142' },
+  ];
+
+  for (const coin of coins) {
+    await prisma.coin.upsert({
+      where: { symbol: coin.symbol },
+      update: coin,
+      create: coin,
+    });
+  }
+  console.log(`Seeded ${coins.length} coins`);
+}
+
 async function main() {
   // Create admin user
   const admin = await prisma.user.upsert({
@@ -13,6 +31,8 @@ async function main() {
       role: Role.ADMIN,
     },
   });
+
+  await seedCoins();
 
   // Create demo posts
   const posts = [

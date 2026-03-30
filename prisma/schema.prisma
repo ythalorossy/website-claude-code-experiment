@@ -177,3 +177,18 @@ model ProjectMember {
 
   @@unique([projectId, memberId])
 }
+
+model Coin {
+  id        String   @id @default(cuid())
+  symbol    String   // BTC, ETH, SOL, DOGE
+  name      String   // Bitcoin, Ethereum, Solana, Dogecoin
+  coincapId String   // "bitcoin", "ethereum" — CoinCap asset ID
+  color     String   // "#f7931a"
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([symbol])
+  @@unique([coincapId])
+  @@index([isActive])
+}
