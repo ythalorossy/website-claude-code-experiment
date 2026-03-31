@@ -6,6 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `nextjs-marketing-cms` is a full-stack Next.js 16 (React 19) application - a software engineering blog with an admin CMS. Uses PostgreSQL with Prisma ORM, NextAuth.js v4 for authentication, and Tailwind CSS for styling.
 
+## Git Workflow
+
+- Do NOT commit or push changes unless explicitly asked to do so
+- Do NOT push to remote branches without confirming the user has a remote set up
+- Never commit .claude/ folder or files containing secrets
+- Use `/commit` skill for all commits — it enforces these rules and generates conventional commit messages
+
 ## Commands
 
 ```bash
@@ -33,6 +40,25 @@ pnpm db:migrate   # Run Prisma migrations
 pnpm db:seed      # Seed database with sample data
 pnpm db:studio    # Open Prisma Studio
 ```
+
+## Framework Knowledge
+
+- This project uses Next.js 16 which uses proxy.ts instead of middleware.ts (middleware.ts is deprecated)
+- After any Prisma schema changes, always run `npx prisma generate` before testing
+- Always regenerate Prisma client after schema modifications
+
+## Approach Guidelines
+
+- When user corrects your approach, fully abandon the previous approach rather than trying to patch it
+- Ask which page/component the user means before implementing UI features
+- Do not modify solution files (*.sln) or add packages unless explicitly requested
+
+## Common Mistakes to Avoid
+
+- Do NOT rename proxy.ts to middleware.ts (middleware.ts is deprecated in Next.js 16)
+- Do NOT forget to run `npx prisma generate` after schema changes — test failures will result
+- Do NOT implement features for the wrong page without asking for clarification first
+- Do NOT commit or push changes without explicit permission
 
 ## Architecture
 
@@ -101,6 +127,12 @@ pnpm db:studio    # Open Prisma Studio
 | `app/admin/layout.tsx` | Admin layout with role-based access control |
 | `proxy.ts` | Middleware: protects `/admin` routes via JWT role check, then passes to next-intl |
 
+## Testing & Verification
+
+- When asked to review changes, focus on current unstaged changes (git diff) not commit history unless specified
+- After completing a task that involved starting a dev server, always stop/kill the server process
+- When writing tests, double-check expected values and avoid duplicate dictionary keys before running
+
 ## Database Setup
 
 ```bash
@@ -137,3 +169,10 @@ EMAIL_FROM="noreply@example.com"
 # AI Chat (Minimax)
 MINIMAX_API_KEY=""
 ```
+
+## Maintaining CLAUDE.md
+
+When you learn something new about this project, add it to CLAUDE.md using:
+- **During a session:** Press `#` to have Claude auto-incorporate learnings
+- **After a session:** Use `/claude-md-improver` skill to audit and improve
+- **Local personalization:** Create `.claude.local.md` for personal preferences (add to .gitignore)
