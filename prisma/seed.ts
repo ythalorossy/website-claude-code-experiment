@@ -147,8 +147,51 @@ Server Components are React components that render on the server. They allow you
     });
   }
 
+  // Create demo team members
+  const teamMembers = [
+    {
+      name: 'Alice Johnson',
+      title: 'Senior Software Engineer',
+      bio: 'Full-stack developer specializing in React and Node.js',
+      email: 'alice@example.com',
+      linkedin: 'https://linkedin.com/in/alicejohnson',
+      github: 'https://github.com/alicejohnson',
+      image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop',
+      isActive: true,
+      order: 1,
+    },
+    {
+      name: 'Bob Smith',
+      title: 'Backend Engineer',
+      bio: 'Building scalable systems with Go and PostgreSQL',
+      email: 'bob@example.com',
+      linkedin: 'https://linkedin.com/in/bobsmith',
+      github: 'https://github.com/bobsmith',
+      isActive: true,
+      order: 2,
+    },
+    {
+      name: 'Carol Davis',
+      title: 'DevOps Engineer',
+      bio: 'Cloud infrastructure and CI/CD specialist',
+      email: 'carol@example.com',
+      github: 'https://github.com/caroldavis',
+      isActive: true,
+      order: 3,
+    },
+  ];
+
+  for (const member of teamMembers) {
+    await prisma.teamMember.upsert({
+      where: { email: member.email },
+      update: member,
+      create: member,
+    });
+  }
+
   console.log('Database seeded successfully!');
   console.log(`Created ${posts.length} posts`);
+  console.log(`Created ${teamMembers.length} team members`);
 }
 
 main()
