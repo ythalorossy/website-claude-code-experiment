@@ -32,6 +32,7 @@ pnpm e2e          # Run e2e tests (Playwright)
 pnpm e2e:ui       # Run e2e tests with UI
 
 **Setup issue:** If tests fail with "Failed to resolve import @testing-library/jest-dom", run `pnpm add -D @testing-library/jest-dom`
+**Git hooks:** Run `pnpm prepare` after first clone to install husky hooks
 
 # Database
 pnpm db:generate  # Generate Prisma client
@@ -84,8 +85,8 @@ pnpm db:studio    # Open Prisma Studio
 - Supported locales: `en`, `pt`, `es`
 
 ### Language Switching (LanguageSelector)
-- `components/layout/LanguageSelector.tsx` uses `router.replace(\`/${newLocale}\`)` which drops the path
-- To preserve path: `pathname.replace(\`/${locale}\`, '') || '/'` then `router.replace(\`/${newLocale}${pathWithoutLocale}\`)`
+- `components/layout/LanguageSelector.tsx` correctly preserves the current path when switching locales
+- Uses `pathname.replace(\`/${locale}\`, '') || '/'` then `router.replace(\`/${newLocale}${pathWithoutLocale}\`)`
 
 ### Database Pattern
 - Prisma singleton imported from `@/lib/db` to prevent multiple instances
@@ -111,6 +112,8 @@ pnpm db:studio    # Open Prisma Studio
 - `app/api/claps/` - Clap/like functionality
 - `app/api/contact/` - Contact form submission (with rate limiting)
 - `app/api/chat/` - AI chat integration (Minimax)
+- `app/api/auth/` - NextAuth.js API routes (Google OAuth, Credentials)
+- `app/api/crypto/` - Admin crypto management API
 
 ## Key Files
 

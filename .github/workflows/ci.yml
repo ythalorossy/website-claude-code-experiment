@@ -72,3 +72,6 @@ jobs:
         run: pnpm e2e
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
+          NEXTAUTH_SECRET: test-secret-key-for-ci-minimum-32-chars
+          NEXTAUTH_URL: http://localhost:3000
+          NEXT_PUBLIC_BASE_URL: http://localhost:3000
