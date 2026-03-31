@@ -181,13 +181,7 @@ Server Components are React components that render on the server. They allow you
     },
   ];
 
-  for (const member of teamMembers) {
-    await prisma.teamMember.upsert({
-      where: { email: member.email },
-      update: member,
-      create: member,
-    });
-  }
+  await prisma.teamMember.createMany({ data: teamMembers });
 
   console.log('Database seeded successfully!');
   console.log(`Created ${posts.length} posts`);
