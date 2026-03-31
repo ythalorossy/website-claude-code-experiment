@@ -93,7 +93,7 @@ test.describe('Admin - Create Post', () => {
   test('all form fields are present', async ({ page }) => {
     await expect(page.locator('input[id="title"]')).toBeVisible();
     await expect(page.locator('input[id="slug"]')).toBeVisible();
-    await expect(page.locator('textarea[id="contentMDX"]')).toBeVisible();
+    await expect(page.locator('[data-rich-text-editor]')).toBeVisible();
     await expect(page.locator('textarea[id="excerpt"]')).toBeVisible();
     await expect(page.locator('input[id="tags"]')).toBeVisible();
     await expect(page.locator('select[id="status"]')).toBeVisible();
@@ -105,7 +105,8 @@ test.describe('Admin - Create Post', () => {
 
   test('shows validation error for empty title', async ({ page }) => {
     // Fill content but not title
-    await page.fill('textarea[id="contentMDX"]', 'This is some test content for the post.');
+    await page.click('[data-rich-text-editor] .ProseMirror');
+    await page.keyboard.type('This is some test content for the post.');
     await page.click('button[type="submit"]');
 
     // Should show validation error
@@ -124,7 +125,8 @@ test.describe('Admin - Create Post', () => {
     const testTitle = `Test Post ${Date.now()}`;
 
     await page.fill('input[id="title"]', testTitle);
-    await page.fill('textarea[id="contentMDX"]', 'This is test content for the post.');
+    await page.click('[data-rich-text-editor] .ProseMirror');
+    await page.keyboard.type('This is test content for the post.');
 
     // Submit
     await page.click('button[type="submit"]:has-text("Create Post")');
@@ -300,6 +302,7 @@ test.describe('Admin - Mobile', () => {
 
     // Fill form
     await page.fill('input[id="title"]', 'Mobile Test Post');
-    await page.fill('textarea[id="contentMDX"]', 'Mobile test content here.');
+    await page.click('[data-rich-text-editor] .ProseMirror');
+    await page.keyboard.type('Mobile test content here.');
   });
 });
