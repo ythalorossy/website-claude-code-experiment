@@ -108,7 +108,7 @@ export default function AboutPage() {
             <div className="rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 p-10 text-center text-white shadow-xl">
               <h2 className="text-2xl font-bold md:text-3xl">Get in Touch</h2>
               <p className="mt-4 text-violet-100">
-                Have questions or want to collaborate? We'd love to hear from you.
+                Have questions or want to collaborate? We&apos;d love to hear from you.
               </p>
               <Link
                 href="/contact"

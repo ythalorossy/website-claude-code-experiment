@@ -1,36 +1,33 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
+
+function useTheme() {
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      window.addEventListener('storage', callback);
+      return () => window.removeEventListener('storage', callback);
+    },
+    []
+  );
+
+  const getSnapshot = useCallback(() => {
+    if (typeof window === 'undefined') return 'dark';
+    return (localStorage.getItem('theme') as 'light' | 'dark') || 'dark';
+  }, []);
+
+  return useSyncExternalStore(subscribe, getSnapshot, () => 'dark');
+}
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.classList.remove('light', 'dark');
-      document.documentElement.classList.add(savedTheme);
-    }
-  }, []);
+  const theme = useTheme();
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     document.documentElement.classList.remove('light', 'dark');
     document.documentElement.classList.add(newTheme);
   };
-
-  if (!mounted) {
-    return (
-      <button className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800">
-        <div className="w-5 h-5" />
-      </button>
-    );
-  }
 
   return (
     <button

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
@@ -11,17 +10,8 @@ import { LanguageSelector } from './LanguageSelector';
 
 export function Header() {
   const { data: session, status } = useSession();
-  const [hasSession, setHasSession] = useState(false);
   const t = useTranslations('Navigation');
   const locale = useLocale();
-
-  useEffect(() => {
-    if (status === 'authenticated') {
-      setHasSession(true);
-    } else if (status === 'unauthenticated') {
-      setHasSession(false);
-    }
-  }, [status]);
 
   const user = session?.user;
   const isLoading = status === 'loading';

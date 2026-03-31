@@ -79,7 +79,7 @@ export default function ContactPage() {
               Contact Us
             </h1>
             <p className="mt-6 text-xl text-gray-600 dark:text-gray-400">
-              Get in touch with us. We'd love to hear from you.
+              Get in touch with us. We&apos;d love to hear from you.
             </p>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function ContactPage() {
             <div className="space-y-6">
               <h2 className="text-2xl font-bold">Get in Touch</h2>
               <p className="text-gray-600 dark:text-gray-400">
-                Have questions or want to collaborate? Fill out the form and we'll get back to you as soon as possible.
+                Have questions or want to collaborate? Fill out the form and we&apos;ll get back to you as soon as possible.
               </p>
 
               <div className="space-y-4">
@@ -148,7 +148,7 @@ export default function ContactPage() {
                     <Send className="h-5 w-5 text-violet-600" />
                     Send a Message
                   </CardTitle>
-                  <CardDescription>Fill out the form below and we'll get back to you.</CardDescription>
+                  <CardDescription>Fill out the form below and we&apos;ll get back to you.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" data-testid="contact-form">
