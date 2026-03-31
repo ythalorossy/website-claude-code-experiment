@@ -50,6 +50,11 @@ jobs:
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
 
+      - name: Seed database
+        run: pnpm db:seed
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+
       - name: Run lint
         run: pnpm lint
 
