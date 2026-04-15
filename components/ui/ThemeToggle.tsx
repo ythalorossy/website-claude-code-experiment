@@ -1,32 +1,26 @@
 'use client';
 
-import { useCallback, useSyncExternalStore } from 'react';
-
-function useTheme() {
-  const subscribe = useCallback(
-    (callback: () => void) => {
-      window.addEventListener('storage', callback);
-      return () => window.removeEventListener('storage', callback);
-    },
-    []
-  );
-
-  const getSnapshot = useCallback(() => {
-    if (typeof window === 'undefined') return 'dark';
-    return (localStorage.getItem('theme') as 'light' | 'dark') || 'dark';
-  }, []);
-
-  return useSyncExternalStore(subscribe, getSnapshot, () => 'dark');
-}
+import { useEffect, useState } from 'react';
 
 export function ThemeToggle() {
-  const theme = useTheme();
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+
+  useEffect(() => {
+    const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (stored === 'light' || stored === 'dark') {
+      setTheme(stored);
+    } else {
+      setTheme('dark');
+    }
+  }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     localStorage.setItem('theme', newTheme);
     document.documentElement.classList.remove('light', 'dark');
     document.documentElement.classList.add(newTheme);
+    document.cookie = `theme=${newTheme};path=/;max-age=${60 * 60 * 24 * 30}`;
+    setTheme(newTheme);
   };
 
   return (

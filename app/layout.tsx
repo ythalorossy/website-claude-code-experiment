@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
 import './globals.css';
 import { SessionProvider } from '@/components/providers/SessionProvider';
 import { ChatWidget } from '@/components/chat/ChatWidget';
+import { ThemeScript } from '@/components/ThemeScript';
 
 export const metadata: Metadata = {
   title: {
@@ -28,33 +30,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const themeCookie = cookieStore.get('theme');
+  const theme = themeCookie?.value || 'dark';
+
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Check for saved theme preference or default to dark
-              (function() {
-                var theme = localStorage.getItem('theme');
-                if (theme) {
-                  document.documentElement.classList.add(theme);
-                } else {
-                  // Default to dark mode
-                  document.documentElement.classList.add('dark');
-                  document.documentElement.classList.remove('light');
-                }
-              })();
-            `,
-          }}
-        />
-      </head>
+    <html lang="en" suppressHydrationWarning className={theme}>
       <body className="min-h-screen bg-white dark:bg-slate-950 text-gray-900 dark:text-gray-100">
+        <ThemeScript />
         <SessionProvider>
           {children}
           <ChatWidget />
