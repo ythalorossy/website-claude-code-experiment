@@ -55,6 +55,29 @@ export default function AdminTeamPage() {
     }
   };
 
+  const moveMember = async (id: string, direction: 'up' | 'down') => {
+    try {
+      const res = await fetch('/api/team/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, direction }),
+      });
+
+      if (res.ok) {
+        const { member1, member2 } = await res.json();
+        startTransition(() => {
+          setTeamMembers((prev) =>
+            prev.map((m) =>
+              m.id === member1.id ? member1 : m.id === member2.id ? member2 : m
+            )
+          );
+        });
+      }
+    } catch (error) {
+      console.error('Failed to reorder member:', error);
+    }
+  };
+
   const deleteMember = async (id: string) => {
     if (!confirm('Are you sure you want to delete this team member?')) return;
 
@@ -148,6 +171,26 @@ export default function AdminTeamPage() {
                     </td>
                     <td className="whitespace-nowrap px-6 py-4">
                       <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => moveMember(member.id, 'up')}
+                          disabled={member.order === 1}
+                          className="rounded-lg p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-900/20 dark:hover:text-blue-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                          title="Move Up"
+                        >
+                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => moveMember(member.id, 'down')}
+                          disabled={member.order === teamMembers.length}
+                          className="rounded-lg p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-900/20 dark:hover:text-blue-400 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                          title="Move Down"
+                        >
+                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
                         <Link
                           href={`/admin/team/${member.id}/edit`}
                           className="rounded-lg p-2 text-gray-400 hover:bg-brand-50 hover:text-brand-600 dark:hover:bg-brand-900/20 dark:hover:text-brand-400 transition-colors"
