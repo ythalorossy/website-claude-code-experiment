@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -25,7 +25,7 @@ export default function AdminTeamPage() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  useState(() => {
+  useEffect(() => {
     fetch('/api/team')
       .then((res) => res.json())
       .then((data) => {
@@ -33,7 +33,7 @@ export default function AdminTeamPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  });
+  }, []);
 
   const toggleActive = async (id: string, currentActive: boolean) => {
     try {
