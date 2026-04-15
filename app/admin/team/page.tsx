@@ -67,9 +67,11 @@ export default function AdminTeamPage() {
         const { member1, member2 } = await res.json();
         startTransition(() => {
           setTeamMembers((prev) =>
-            prev.map((m) =>
-              m.id === member1.id ? member1 : m.id === member2.id ? member2 : m
-            )
+            prev
+              .map((m) =>
+                m.id === member1.id ? member1 : m.id === member2.id ? member2 : m
+              )
+              .sort((a, b) => a.order - b.order)
           );
         });
       }
