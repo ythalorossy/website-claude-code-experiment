@@ -50,3 +50,6 @@ next-env.d.ts.worktrees/
 
 # Claude
 .claude/
+
+# Tool versions
+.tool-versions
