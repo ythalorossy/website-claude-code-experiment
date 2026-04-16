@@ -12,7 +12,7 @@
     "signIn": "Entrar",
     "signOut": "Sair",
     "admin": "Admin",
-    "games": "Juegos"
+    "games": "Jogos"
   },
   "Home": {
     "title": "Bem-vindo ao Nosso Site",
@@ -129,14 +129,14 @@
     "back": "Voltar"
   },
   "Games": {
-    "title": "Juegos",
-    "subtitle": "Juega nuestros proyectos de juegos",
-    "noGames": "Aún no hay juegos.",
-    "comingSoon": "Próximamente...",
-    "playNow": "Jugar Ahora",
+    "title": "Jogos",
+    "subtitle": "Jogue nossos projetos de jogos",
+    "noGames": "Nenhum jogo ainda.",
+    "comingSoon": "Em breve...",
+    "playNow": "Jogar Agora",
     "itchio": "Itch.io",
-    "allGames": "Todos los Juegos",
-    "active": "Activo",
-    "archived": "Archivado"
+    "allGames": "Todos os Jogos",
+    "active": "Ativo",
+    "archived": "Arquivado"
   }
 }
