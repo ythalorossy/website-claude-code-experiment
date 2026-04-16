@@ -1,0 +1,295 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
+const GENRE_OPTIONS = ['RPG', 'FPS', 'Puzzle', 'Platformer', 'Strategy', 'Adventure', 'Simulation', 'Sports', 'Horror', 'Other'];
+const PLATFORM_OPTIONS = ['PC', 'Mobile', 'Web', 'Console', 'Nintendo Switch', 'PlayStation', 'Xbox'];
+const ENGINE_OPTIONS = ['Unity', 'Unreal', 'Godot', 'Phaser', 'GameMaker', 'Construct', 'Custom', 'Other'];
+
+export default function EditGamePage({ params }: { params: Promise<{ id: string }> }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    image: '',
+    playUrl: '',
+    itchUrl: '',
+    status: true,
+    startDate: '',
+    endDate: '',
+  });
+
+  const [genre, setGenre] = useState<string[]>([]);
+  const [platform, setPlatform] = useState<string[]>([]);
+  const [engine, setEngine] = useState<string[]>([]);
+
+  useEffect(() => {
+    Promise.all([
+      params.then(({ id }) => fetch(`/api/games/${id}`).then(res => res.json()))
+    ]).then(([gameData]) => {
+      setFormData({
+        title: gameData.title,
+        description: gameData.description,
+        image: gameData.image || '',
+        playUrl: gameData.playUrl || '',
+        itchUrl: gameData.itchUrl || '',
+        status: gameData.status,
+        startDate: gameData.startDate ? gameData.startDate.split('T')[0] : '',
+        endDate: gameData.endDate ? gameData.endDate.split('T')[0] : '',
+      });
+      setGenre(gameData.genre || []);
+      setPlatform(gameData.platform || []);
+      setEngine(gameData.engine || []);
+      setLoading(false);
+    }).catch(() => {
+      setError('Failed to load game');
+      setLoading(false);
+    });
+  }, [params]);
+
+  const toggleArrayField = (field: 'genre' | 'platform' | 'engine', value: string) => {
+    const setValues = field === 'genre' ? setGenre : field === 'platform' ? setPlatform : setEngine;
+    const values = field === 'genre' ? genre : field === 'platform' ? platform : engine;
+    if (values.includes(value)) {
+      setValues(values.filter((v) => v !== value));
+    } else {
+      setValues([...values, value]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      const { id } = await params;
+      const res = await fetch(`/api/games/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, genre, platform, engine }),
+      });
+      if (!res.ok) throw new Error('Failed to update game');
+      router.push('/admin/games');
+      router.refresh();
+    } catch (err) {
+      setError('Failed to update game');
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-2xl space-y-6">
+      <div>
+        <Link
+          href="/admin/games"
+          className="mb-4 inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
+        >
+          <svg className="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Games
+        </Link>
+        <h1 className="text-3xl font-bold">Edit Game</h1>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-slate-900">
+        {error && (
+          <div className="rounded-md bg-red-50 p-4 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+            {error}
+          </div>
+        )}
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium">Title *</label>
+            <input
+              type="text"
+              required
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-slate-800"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium">Description *</label>
+            <textarea
+              rows={4}
+              required
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-slate-800"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-medium">Image URL</label>
+            <input
+              type="url"
+              value={formData.image}
+              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+              placeholder="https://example.com/game-image.jpg"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-slate-800"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">Play URL</label>
+            <input
+              type="url"
+              value={formData.playUrl}
+              onChange={(e) => setFormData({ ...formData, playUrl: e.target.value })}
+              placeholder="https://play.example.com"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-slate-800"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">Itch.io URL</label>
+            <input
+              type="url"
+              value={formData.itchUrl}
+              onChange={(e) => setFormData({ ...formData, itchUrl: e.target.value })}
+              placeholder="https://example.itch.io"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-slate-800"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">Start Date</label>
+            <input
+              type="date"
+              value={formData.startDate}
+              onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-slate-800"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">End Date</label>
+            <input
+              type="date"
+              value={formData.endDate}
+              onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-slate-800"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-2 block text-sm font-medium">Genre</label>
+            <div className="flex flex-wrap gap-2">
+              {GENRE_OPTIONS.map((option) => (
+                <label
+                  key={option}
+                  className={`cursor-pointer rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                    genre.includes(option)
+                      ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300 border border-brand-300 dark:border-brand-700'
+                      : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 border border-transparent hover:bg-gray-200 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={genre.includes(option)}
+                    onChange={() => toggleArrayField('genre', option)}
+                  />
+                  {option}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-2 block text-sm font-medium">Platform</label>
+            <div className="flex flex-wrap gap-2">
+              {PLATFORM_OPTIONS.map((option) => (
+                <label
+                  key={option}
+                  className={`cursor-pointer rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                    platform.includes(option)
+                      ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300 border border-brand-300 dark:border-brand-700'
+                      : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 border border-transparent hover:bg-gray-200 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={platform.includes(option)}
+                    onChange={() => toggleArrayField('platform', option)}
+                  />
+                  {option}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="mb-2 block text-sm font-medium">Engine</label>
+            <div className="flex flex-wrap gap-2">
+              {ENGINE_OPTIONS.map((option) => (
+                <label
+                  key={option}
+                  className={`cursor-pointer rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                    engine.includes(option)
+                      ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300 border border-brand-300 dark:border-brand-700'
+                      : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 border border-transparent hover:bg-gray-200 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={engine.includes(option)}
+                    onChange={() => toggleArrayField('engine', option)}
+                  />
+                  {option}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="md:col-span-2 flex items-center">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.checked })}
+                className="rounded border-gray-300"
+              />
+              <span className="text-sm font-medium">Active</span>
+            </label>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3">
+          <Link
+            href="/admin/games"
+            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+          >
+            Cancel
+          </Link>
+          <button
+            type="submit"
+            disabled={saving}
+            className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
+          >
+            {saving ? 'Saving...' : 'Save Changes'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
