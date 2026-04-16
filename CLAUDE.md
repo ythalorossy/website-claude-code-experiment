@@ -54,6 +54,12 @@ pnpm db:studio    # Open Prisma Studio
 - Ask which page/component the user means before implementing UI features
 - Do not modify solution files (*.sln) or add packages unless explicitly requested
 
+## Games Section
+
+- Game model uses checkbox groups for genre/platform/engine (stored as string arrays, not comma-separated like project technologies)
+- Public games page: `/[locale]/games` — hero shows most recent game, grid/list view toggle
+- Admin games: `/admin/games` — full CRUD via REST API at `/api/games`
+
 ## Common Mistakes to Avoid
 
 - Do NOT rename proxy.ts to middleware.ts (middleware.ts is deprecated in Next.js 16)
@@ -65,7 +71,7 @@ pnpm db:studio    # Open Prisma Studio
 
 ### App Router Structure
 - `app/` - Next.js 16 App Router with file-based routing
-- `app/[locale]/` - Locale-prefixed public pages (about, blog, contact, projects, team)
+- `app/[locale]/` - Locale-prefixed public pages (about, blog, contact, games, projects, team, writing)
 - `app/api/` - RESTful API routes (posts, team, comments, claps, contact, chat)
 - `app/admin/` - Protected admin CMS pages (require ADMIN role)
 - `app/blog/[slug]/` - Blog post detail pages (note: blog routes use `[locale]` prefix)
@@ -108,6 +114,8 @@ pnpm db:studio    # Open Prisma Studio
 - `app/api/posts/` - Post CRUD (GET list, POST create)
 - `app/api/posts/[id]/` - Single post operations (GET, PATCH, DELETE)
 - `app/api/team/` and `app/api/team/[id]/` - Team member CRUD
+- `app/api/games/` - Game CRUD (GET list, POST create)
+- `app/api/games/[id]/` - Single game operations (GET, PATCH, DELETE)
 - `app/api/comments/` - Comment operations
 - `app/api/claps/` - Clap/like functionality
 - `app/api/contact/` - Contact form submission (with rate limiting)
@@ -119,7 +127,7 @@ pnpm db:studio    # Open Prisma Studio
 
 | File | Purpose |
 |------|---------|
-| `prisma/schema.prisma` | Database models (User, Post, Comment, Clap, TeamMember, plus NextAuth Account/Session/VerificationToken) |
+| `prisma/schema.prisma` | Database models (User, Post, Comment, Clap, TeamMember, Game, plus NextAuth Account/Session/VerificationToken) |
 | `lib/auth.ts` | NextAuth configuration with Google OAuth and Credentials providers |
 | `lib/db.ts` | Prisma singleton |
 | `lib/utils.ts` | Utilities: `cn()`, `slugify()`, `formatDate()`, `truncate()` (Note: `new Date('YYYY-MM-DD')` parses as UTC midnight - append `'T00:00:00'` for local timezone) |
@@ -128,6 +136,8 @@ pnpm db:studio    # Open Prisma Studio
 | `i18n/request.ts` | next-intl request config (locale detection, message loading) |
 | `components/ui/` | Reusable UI components (Card, Button, Input, etc.) |
 | `app/admin/layout.tsx` | Admin layout with role-based access control |
+| `app/[locale]/games/page.tsx` | Public games page with hero + grid/list views |
+| `app/admin/games/page.tsx` | Admin games listing (status toggle, edit, delete) |
 | `proxy.ts` | Middleware: protects `/admin` routes via JWT role check, then passes to next-intl |
 
 ## Testing & Verification
