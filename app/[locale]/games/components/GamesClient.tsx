@@ -17,12 +17,12 @@ interface Game {
   playUrl: string | null;
   itchUrl: string | null;
   status: boolean;
-  createdAt: string;
 }
 
 export function GamesClient({ games }: { games: Game[] }) {
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const featuredGame = games[0] || null;
+  const remainingGames = games.slice(1);
 
   return (
     <div className="min-h-screen">
@@ -59,14 +59,14 @@ export function GamesClient({ games }: { games: Game[] }) {
             </div>
           </div>
 
-          {games.length === 0 ? (
+          {remainingGames.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 dark:text-gray-400">No games yet.</p>
             </div>
           ) : view === 'grid' ? (
-            <GamesGrid games={games} />
+            <GamesGrid games={remainingGames} />
           ) : (
-            <GamesList games={games} />
+            <GamesList games={remainingGames} />
           )}
         </div>
       </section>
