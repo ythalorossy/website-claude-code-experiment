@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 
@@ -26,7 +25,6 @@ export default function AdminGamesPage() {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
 
   useState(() => {
     fetch('/api/games')
@@ -126,7 +124,7 @@ export default function AdminGamesPage() {
                     <td className="whitespace-nowrap px-6 py-4">
                       <div className="flex items-center gap-3">
                         {game.image ? (
-                          <img src={game.image} alt="" className="h-10 w-10 rounded-lg object-cover ring-2 ring-brand-500/20" />
+                          <img src={game.image} alt={game.title} className="h-10 w-10 rounded-lg object-cover ring-2 ring-brand-500/20" />
                         ) : (
                           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 text-sm font-bold text-white ring-2 ring-brand-500/20">
                             {game.title.slice(0, 2).toUpperCase()}
@@ -217,7 +215,7 @@ export default function AdminGamesPage() {
                         <Link
                           href={`/admin/games/${game.id}/edit`}
                           className="rounded-lg p-2 text-gray-400 hover:bg-brand-50 hover:text-brand-600 dark:hover:bg-brand-900/20 dark:hover:text-brand-400 transition-colors"
-                          title="Edit"
+                          aria-label="Edit"
                         >
                           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -226,7 +224,7 @@ export default function AdminGamesPage() {
                         <button
                           onClick={() => deleteGame(game.id)}
                           className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
-                          title="Delete"
+                          aria-label="Delete"
                         >
                           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
