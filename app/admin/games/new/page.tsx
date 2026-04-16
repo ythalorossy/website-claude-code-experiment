@@ -81,8 +81,9 @@ export default function NewGamePage() {
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="md:col-span-2">
-            <label className="mb-1 block text-sm font-medium">Title *</label>
+            <label htmlFor="title" className="mb-1 block text-sm font-medium">Title *</label>
             <input
+              id="title"
               type="text"
               required
               value={formData.title}
@@ -92,8 +93,9 @@ export default function NewGamePage() {
           </div>
 
           <div className="md:col-span-2">
-            <label className="mb-1 block text-sm font-medium">Description *</label>
+            <label htmlFor="description" className="mb-1 block text-sm font-medium">Description *</label>
             <textarea
+              id="description"
               rows={4}
               required
               value={formData.description}
@@ -103,8 +105,9 @@ export default function NewGamePage() {
           </div>
 
           <div className="md:col-span-2">
-            <label className="mb-1 block text-sm font-medium">Image URL</label>
+            <label htmlFor="image" className="mb-1 block text-sm font-medium">Image URL</label>
             <input
+              id="image"
               type="url"
               value={formData.image}
               onChange={(e) => setFormData({ ...formData, image: e.target.value })}
@@ -114,8 +117,9 @@ export default function NewGamePage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium">Play URL</label>
+            <label htmlFor="playUrl" className="mb-1 block text-sm font-medium">Play URL</label>
             <input
+              id="playUrl"
               type="url"
               value={formData.playUrl}
               onChange={(e) => setFormData({ ...formData, playUrl: e.target.value })}
@@ -125,8 +129,9 @@ export default function NewGamePage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium">Itch.io URL</label>
+            <label htmlFor="itchUrl" className="mb-1 block text-sm font-medium">Itch.io URL</label>
             <input
+              id="itchUrl"
               type="url"
               value={formData.itchUrl}
               onChange={(e) => setFormData({ ...formData, itchUrl: e.target.value })}
@@ -136,8 +141,9 @@ export default function NewGamePage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium">Start Date</label>
+            <label htmlFor="startDate" className="mb-1 block text-sm font-medium">Start Date</label>
             <input
+              id="startDate"
               type="date"
               value={formData.startDate}
               onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
@@ -146,8 +152,9 @@ export default function NewGamePage() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium">End Date</label>
+            <label htmlFor="endDate" className="mb-1 block text-sm font-medium">End Date</label>
             <input
+              id="endDate"
               type="date"
               value={formData.endDate}
               onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
@@ -155,12 +162,13 @@ export default function NewGamePage() {
             />
           </div>
 
-          <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-medium">Genre</label>
+          <div className="md:col-span-2" role="group" aria-labelledby="genre-label">
+            <label id="genre-label" className="mb-2 block text-sm font-medium">Genre</label>
             <div className="flex flex-wrap gap-2">
               {GENRE_OPTIONS.map((option) => (
                 <label
                   key={option}
+                  htmlFor={`genre-${option}`}
                   className={`cursor-pointer rounded-full px-3 py-1 text-sm font-medium transition-colors ${
                     genre.includes(option)
                       ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300 border border-brand-300 dark:border-brand-700'
@@ -168,6 +176,7 @@ export default function NewGamePage() {
                   }`}
                 >
                   <input
+                    id={`genre-${option}`}
                     type="checkbox"
                     className="sr-only"
                     checked={genre.includes(option)}
@@ -179,12 +188,13 @@ export default function NewGamePage() {
             </div>
           </div>
 
-          <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-medium">Platform</label>
+          <div className="md:col-span-2" role="group" aria-labelledby="platform-label">
+            <label id="platform-label" className="mb-2 block text-sm font-medium">Platform</label>
             <div className="flex flex-wrap gap-2">
               {PLATFORM_OPTIONS.map((option) => (
                 <label
                   key={option}
+                  htmlFor={`platform-${option}`}
                   className={`cursor-pointer rounded-full px-3 py-1 text-sm font-medium transition-colors ${
                     platform.includes(option)
                       ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300 border border-brand-300 dark:border-brand-700'
@@ -192,6 +202,7 @@ export default function NewGamePage() {
                   }`}
                 >
                   <input
+                    id={`platform-${option}`}
                     type="checkbox"
                     className="sr-only"
                     checked={platform.includes(option)}
@@ -203,12 +214,13 @@ export default function NewGamePage() {
             </div>
           </div>
 
-          <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-medium">Engine</label>
+          <div className="md:col-span-2" role="group" aria-labelledby="engine-label">
+            <label id="engine-label" className="mb-2 block text-sm font-medium">Engine</label>
             <div className="flex flex-wrap gap-2">
               {ENGINE_OPTIONS.map((option) => (
                 <label
                   key={option}
+                  htmlFor={`engine-${option}`}
                   className={`cursor-pointer rounded-full px-3 py-1 text-sm font-medium transition-colors ${
                     engine.includes(option)
                       ? 'bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300 border border-brand-300 dark:border-brand-700'
@@ -216,6 +228,7 @@ export default function NewGamePage() {
                   }`}
                 >
                   <input
+                    id={`engine-${option}`}
                     type="checkbox"
                     className="sr-only"
                     checked={engine.includes(option)}
@@ -228,8 +241,9 @@ export default function NewGamePage() {
           </div>
 
           <div className="md:col-span-2 flex items-center">
-            <label className="flex items-center gap-2">
+            <label htmlFor="status" className="flex items-center gap-2">
               <input
+                id="status"
                 type="checkbox"
                 checked={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.checked })}
