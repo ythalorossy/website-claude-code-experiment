@@ -7,6 +7,7 @@
     "projects": "Projects",
     "portfolio": "Portfolio",
     "writing": "Writing",
+    "games": "Games",
     "contact": "Contact",
     "crypto": "Crypto",
     "signIn": "Sign In",
@@ -126,5 +127,16 @@
     "edit": "Edit",
     "create": "Create",
     "back": "Back"
+  },
+  "Games": {
+    "title": "Games",
+    "subtitle": "Play our game projects",
+    "noGames": "No games yet.",
+    "comingSoon": "Coming soon...",
+    "playNow": "Play Now",
+    "itchio": "Itch.io",
+    "allGames": "All Games",
+    "active": "Active",
+    "archived": "Archived"
   }
 }

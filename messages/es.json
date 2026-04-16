@@ -11,7 +11,8 @@
     "crypto": "Crypto",
     "signIn": "Iniciar Sesion",
     "signOut": "Cerrar Sesion",
-    "admin": "Admin"
+    "admin": "Admin",
+    "games": "Jogos"
   },
   "Home": {
     "title": "Bienvenido a Nuestro Sitio",
@@ -126,5 +127,16 @@
     "edit": "Editar",
     "create": "Crear",
     "back": "Volver"
+  },
+  "Games": {
+    "title": "Jogos",
+    "subtitle": "Joga nossos projetos de jogos",
+    "noGames": "Nenhum jogo ainda.",
+    "comingSoon": "Em breve...",
+    "playNow": "Jogar Agora",
+    "itchio": "Itch.io",
+    "allGames": "Todos os Jogos",
+    "active": "Ativo",
+    "archived": "Arquivado"
   }
 }
